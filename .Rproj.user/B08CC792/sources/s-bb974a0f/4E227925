@@ -5,14 +5,14 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "3507168032",
     "id" : "4E227925",
-    "lastKnownWriteTime" : 1589360927,
-    "last_content_update" : 1589360927795,
+    "lastKnownWriteTime" : 1589361149,
+    "last_content_update" : 1589361149602,
     "path" : "~/Website/content/blog/2020-05-13-blog.Rmd",
     "project_path" : "content/blog/2020-05-13-blog.Rmd",
     "properties" : {
-        "cursorPosition" : "34,57",
+        "cursorPosition" : "34,0",
         "scrollLine" : "23"
     },
     "relative_order" : 7,

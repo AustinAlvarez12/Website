@@ -284,3 +284,54 @@ Total 14 (delta 7), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/7)[Kremote: Resolving deltas:  14% (1/7)[Kremote: Resolving deltas:  28% (2/7)[Kremote: Resolving deltas:  42% (3/7)[Kremote: Resolving deltas:  57% (4/7)[Kremote: Resolving deltas:  71% (5/7)[Kremote: Resolving deltas:  85% (6/7)[Kremote: Resolving deltas: 100% (7/7)[Kremote: Resolving deltas: 100% (7/7), completed with 7 local objects.[K
 To https://github.com/AustinAlvarez12/Website.git
    029d82d..9620df3  master -> master
+git add .
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git commit -m "any message, but you must have a message"
+[master b208ec6] any message, but you must have a message
+ Committer: Austin Alvarez <apa636@educcomp01.ccbb.utexas.edu>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 28 files changed, 517 insertions(+), 676 deletions(-)
+ create mode 100644 .Rproj.user/B08CC792/sources/prop/579F221E
+ create mode 100644 .Rproj.user/B08CC792/sources/s-bb974a0f/4E227925
+ create mode 100644 .Rproj.user/B08CC792/sources/s-bb974a0f/4E227925-contents
+ delete mode 100644 .Rproj.user/B08CC792/sources/s-bb974a0f/88CEB613
+ delete mode 100644 .Rproj.user/shared/notebooks/B8E45865-2020-05-13-python-blog/1/B08CC792bb974a0f/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/CD01BDFC-2020-05-13-blog/1/B08CC792bb974a0f/chunks.json
+ create mode 100644 .Rproj.user/shared/notebooks/CD01BDFC-2020-05-13-blog/1/s/chunks.json
+ create mode 100644 content/blog/2020-05-13-blog.Rmd
+ create mode 100644 content/blog/2020-05-13-blog.html
+ create mode 100644 public/blog/2020-05-13-blog.Rmd
+ create mode 100644 public/blog/2020-05-13-blog_files/IMG_1266.jpg
+ rename {content => public}/blog/2020-05-13-python-blog.Rmd (100%)
+ rewrite public/blog/index.xml (87%)
+ create mode 100644 public/blog/new-post/index.html
+ create mode 100644 public/img/IMG_1266.jpg
+ rewrite public/index.xml (60%)
+ rewrite public/sitemap.xml (66%)
+ rewrite public/tags/index.xml (72%)
+ create mode 100644 static/blog/2020-05-13-blog_files/IMG_1266.jpg
+ create mode 100644 static/blog/2020-05-13-python-blog.Rmd
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git push origin master
+Username for 'https://github.com': AustinAlvae rez12
+Password for 'https://AustinAlvarez12@github.com': 
+Counting objects: 43, done.
+Delta compression using up to 16 threads.
+Compressing objects:   2% (1/36)   Compressing objects:   5% (2/36)   Compressing objects:   8% (3/36)   Compressing objects:  11% (4/36)   Compressing objects:  13% (5/36)   Compressing objects:  16% (6/36)   Compressing objects:  19% (7/36)   Compressing objects:  22% (8/36)   Compressing objects:  25% (9/36)   Compressing objects:  27% (10/36)   Compressing objects:  30% (11/36)   Compressing objects:  33% (12/36)   Compressing objects:  36% (13/36)   Compressing objects:  38% (14/36)   Compressing objects:  41% (15/36)   Compressing objects:  44% (16/36)   Compressing objects:  47% (17/36)   Compressing objects:  50% (18/36)   Compressing objects:  52% (19/36)   Compressing objects:  55% (20/36)   Compressing objects:  58% (21/36)   Compressing objects:  61% (22/36)   Compressing objects:  63% (23/36)   Compressing objects:  66% (24/36)   Compressing objects:  69% (25/36)   Compressing objects:  72% (26/36)   Compressing objects:  75% (27/36)   Compressing objects:  77% (28/36)   Compressing objects:  80% (29/36)   Compressing objects:  83% (30/36)   Compressing objects:  86% (31/36)   Compressing objects:  88% (32/36)   Compressing objects:  91% (33/36)   Compressing objects:  94% (34/36)   Compressing objects:  97% (35/36)   Compressing objects: 100% (36/36)   Compressing objects: 100% (36/36), done.
+Writing objects:   2% (1/43)   Writing objects:   4% (2/43)   Writing objects:   6% (3/43)   Writing objects:   9% (4/43)   Writing objects:  11% (5/43)   Writing objects:  13% (6/43)   Writing objects:  16% (7/43)   Writing objects:  18% (8/43)   Writing objects:  20% (9/43)   Writing objects:  23% (10/43)   Writing objects:  25% (11/43)   Writing objects:  30% (13/43)   Writing objects:  32% (14/43)   Writing objects:  34% (15/43)   Writing objects:  37% (16/43)   Writing objects:  39% (17/43)   Writing objects:  41% (18/43)   Writing objects:  44% (19/43)   Writing objects:  46% (20/43)   Writing objects:  48% (21/43)   Writing objects:  51% (22/43)   Writing objects:  53% (23/43)   Writing objects:  55% (24/43)   Writing objects:  58% (25/43)   Writing objects:  62% (27/43)   Writing objects:  65% (28/43)   Writing objects:  67% (29/43)   Writing objects:  69% (30/43)   Writing objects:  72% (31/43)   Writing objects:  74% (32/43)   Writing objects:  76% (33/43)   Writing objects:  79% (34/43)   Writing objects:  81% (35/43)   Writing objects:  83% (36/43)   Writing objects:  86% (37/43)   Writing objects:  88% (38/43)   Writing objects:  90% (39/43)   Writing objects:  93% (40/43)   Writing objects:  95% (41/43)   Writing objects:  97% (42/43)   Writing objects: 100% (43/43)   Writing objects: 100% (43/43), 8.01 KiB | 911.00 KiB/s, done.
+Total 43 (delta 20), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/20)[Kremote: Resolving deltas:   5% (1/20)[Kremote: Resolving deltas:  10% (2/20)[Kremote: Resolving deltas:  15% (3/20)[Kremote: Resolving deltas:  20% (4/20)[Kremote: Resolving deltas:  25% (5/20)[Kremote: Resolving deltas:  35% (7/20)[Kremote: Resolving deltas:  40% (8/20)[Kremote: Resolving deltas:  45% (9/20)[Kremote: Resolving deltas:  50% (10/20)[Kremote: Resolving deltas:  55% (11/20)[Kremote: Resolving deltas:  60% (12/20)[Kremote: Resolving deltas:  65% (13/20)[Kremote: Resolving deltas:  70% (14/20)[Kremote: Resolving deltas:  75% (15/20)[Kremote: Resolving deltas:  80% (16/20)[Kremote: Resolving deltas:  85% (17/20)[Kremote: Resolving deltas:  90% (18/20)[Kremote: Resolving deltas:  95% (19/20)[Kremote: Resolving deltas: 100% (20/20)[Kremote: Resolving deltas: 100% (20/20), completed with 18 local objects.[K
+To https://github.com/AustinAlvarez12/Website.git
+   9620df3..b208ec6  master -> master
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git add .
