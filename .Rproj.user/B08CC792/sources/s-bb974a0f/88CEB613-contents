@@ -1,9 +1,12 @@
-+++
-title = ""
-description = ""
-tags = []
-categories = []
-+++
+---
+title: New Post
+author: ''
+date: "2020-05-13"
+slug: new-post
+categories: []
+tags: []
+description: ''
+---
 In SDS 348, we have been working on using python for the last two weeks of the semester in order to do our final project. During these two weeks we've went over the basics of python such as how to create a python file in R studio using touch newfile.py and playing around with simple commands such as:
 {python}
 #3-2
