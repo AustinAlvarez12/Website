@@ -6,4 +6,35 @@ bash: cd: /stor/home/apa636/home/Website: No such file or directory
 ]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git init #initialize local git respository
 Reinitialized existing Git repository in /stor/home/apa636/Website/.git/
 ]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
-]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git add . #add all files in repository 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git add . #add all files in repository to be uploaded
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git commit -m "first website commit"
+[master 9b4f90e] first website commit
+ Committer: Austin Alvarez <apa636@educcomp01.ccbb.utexas.edu>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 12 insertions(+), 199 deletions(-)
+ rewrite .Rproj.user/B08CC792/console06/B76B5EB7 (91%)
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git remote add origin https://github.com/AustinAlvarez12/Website.ggit #re
+fatal: remote origin already exists.
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git push origin master
+Username for 'https://github.com': Password for 'https://github.com': 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ cd ~/Website #if you haven't already
+ush origin master
+
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/apa636/Website]0;apa636@educcomp01: ~/Website[01;32mapa636@educcomp01[00m:[01;34m~/Website[00m$ git init #initialize local git respository
