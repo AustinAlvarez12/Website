@@ -1,0 +1,193 @@
+---
+title: 'Project 1: Exploratory Data Analysis'
+author: "SDS348"
+date: ''
+output:
+  pdf_document:
+    toc: no
+  word_document:
+    toc: no
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+Austin Alvarez (apa636)
+
+##### 0.) Introduction:
+
+  For this project, I have chosen to look at stats from the 2017-2018 and 2018-2019 NBA season because I was interested in comparing player stats from both seasons. The 2017-2018 and 2018-2019 seaons were chosen since they were the two most recent full seasons played. The variables contained in both datasets include player, position, and age among 26 other variables. The data for this project was acquired from basketball-reference.com, which is considered one of the best if not the best website for in-depth NBA statistics and data. The datasets were interesting to me because I'm a big fan of the NBA and statistics in sports, so I thought combining my two loves and interests would make for an interesting and fun project! 
+  
+  I expect to find players who were among the best performers in the 2017-2018 season to be among the best performers in the 2018-2019 season, assuming injuries weren't an inhibiting factor, because most players that are in their primes should perform roughly the same, if not better, in back to back seasons. I think that the players who are among the worst performers in the 2017-2018 season will not be among the worst performers from the 2018-2019 season since they would either improve or no longer play in the NBA due to their lack of performance/production.
+
+##### 1.) Tidying: Rearranging Wide/Long
+
+```{R}
+library(dplyr)
+library(tidyverse)
+library(janitor)
+library(rvest)
+
+url <- "https://www.basketball-reference.com/leagues/NBA_2018_totals.html"
+NBA_stats1 <- url %>% 
+  read_html() %>% 
+  html_table() %>% 
+  .[[1]]
+
+NBA_stats1 <- NBA_stats1 %>% 
+  remove_empty("cols") %>%  
+  clean_names() %>%        
+  dplyr::filter(!player=="Player") %>% 
+  mutate_at(vars(-c(player,tm,pos)),as.numeric) %>% 
+  mutate_at(vars(-c(player,tm,pos)), funs(replace(., is.na(.), 0))) %>% 
+  as_tibble()
+str(NBA_stats1)
+
+NBA_stats1 <- NBA_stats1 %>% 
+  group_by(player) %>% 
+  slice(1) %>% 
+  ungroup() %>%
+  select(-rk)
+  
+url2 <- "https://www.basketball-reference.com/leagues/NBA_2019_totals.html"
+NBA_stats2 <- url2 %>% 
+  read_html() %>% 
+  html_table() %>% 
+  .[[1]]
+
+NBA_stats2 <- NBA_stats2 %>% 
+  remove_empty("cols") %>%  
+  clean_names() %>%        
+  dplyr::filter(!player=="Player") %>% 
+  mutate_at(vars(-c(player,tm,pos)),as.numeric) %>% 
+  mutate_at(vars(-c(player,tm,pos)), funs(replace(., is.na(.), 0))) %>% 
+  as_tibble()
+str(NBA_stats2)
+
+NBA_stats2 <- NBA_stats2 %>% 
+  group_by(player) %>% 
+  slice(1) %>% 
+  ungroup() %>%
+  select(-rk)
+
+NBA_stats1 %>% pivot_wider(names_from = "tm", values_from = "pts")
+NBA_stats1 %>% pivot_longer(c("pts"), names_to = "Points", values_to = "Points Scored")
+
+NBA_stats2 %>% pivot_wider(names_from = "tm", values_from = "pts")
+NBA_stats2 %>% pivot_longer(c("pts"), names_to = "Points", values_to = "Points Scored")
+```
+
+For part 1, my datasets were already tidy so what I did was use the pivot_wider() function in order to untidy my datasets then I tidied them back together by using the pivot_longer() function.
+
+##### 2.) Joining/Merging:
+
+```{R}
+NBA_stats <- full_join(NBA_stats1, NBA_stats2, by=c("player", "pos", "age", "tm", "g", "gs", "mp", "fg", "fga", "fg_percent", "x3p", "x3pa", "x3p_percent", "x2p", "x2pa", "x2p_percent", "e_fg_percent", "ft", "fta", "ft_percent", "orb", "drb", "trb", "ast", "stl", "blk", "tov", "pf", "pts")) 
+```
+
+In part 2, I used the full_join dplyr join function to join my two datasets together by every common variable that the two datasets shared. I chose this join function because it gave me observations for each variable unlike inner_join and I didn't chose left_join or right_join because they didn't combine the two datasets, they just returned me the same data as my first and second datasets, respectively. Additionally, I didn't see any cases that were dropped when the two datasets were joined.
+
+##### 3.) Wrangling:
+
+```{R}
+NBA_Season_Stats <- NBA_stats %>% mutate(MPG = mp/g, PPG = pts/g, RPG = trb/g, APG = ast/g, SPG = stl/g, BPG = blk/g) %>% select(1:6, 10, 13, 20, 30:35) %>% mutate_if(is.numeric, round, digits = 3) %>% rename(Player=player, Position=pos, Age=age, Team=tm, Games_Played= g, Games_Started=gs, FG_Percent=fg_percent, x3P_Percent = x3p_percent, FT_Percent=ft_percent) %>% mutate_at(vars(MPG, PPG, RPG, APG, SPG, BPG), round, 1) 
+
+NBA_Season_Stats %>% summarize_all(n_distinct)
+
+NBA_Season_Stats %>% summarise_at(c("Age", "Games_Played", "Games_Started", "FG_Percent", "x3P_Percent", "FT_Percent","MPG", "PPG", "RPG", "APG", "SPG", "BPG"), mean, na.rm=T)
+
+NBA_Season_Stats %>% summarise_at(c("Age", "Games_Played", "Games_Started", "FG_Percent", "x3P_Percent", "FT_Percent","MPG", "PPG", "RPG", "APG", "SPG", "BPG"), sd, na.rm=T)
+
+NBA_Season_Stats %>% summarise_at(c("Age", "Games_Played", "Games_Started", "FG_Percent", "x3P_Percent", "FT_Percent","MPG", "PPG", "RPG", "APG", "SPG", "BPG"), max, na.rm=T)
+
+NBA_Season_Stats %>% summarise_at(c("Age", "Games_Played", "Games_Started", "FG_Percent", "x3P_Percent", "FT_Percent","MPG", "PPG", "RPG", "APG", "SPG", "BPG"), min, na.rm=T)
+
+NBA_Season_Stats %>% arrange(desc(Age))
+
+NBA_Season_Stats %>% group_by(Team)%>%top_n(15, Age) %>% summarise(mean(Age)) 
+
+NBA_Season_Stats %>% group_by(Team)%>%top_n(15, MPG) %>% summarise(mean(MPG))
+
+NBA_Season_Stats %>% group_by(Team)%>%top_n(15, PPG) %>% summarise(mean(PPG))
+
+NBA_Season_Stats %>% group_by(Team)%>%top_n(15, RPG) %>% summarise(mean(RPG))
+
+NBA_Season_Stats %>% group_by(Team)%>%top_n(15, APG) %>% summarise(mean(APG))
+
+NBA_Season_Stats %>% group_by(Team)%>%top_n(15, SPG) %>% summarise(mean(SPG))
+
+NBA_Season_Stats %>% group_by(Team)%>%top_n(15, BPG) %>% summarise(mean(BPG))
+
+NBA_Season_Stats %>% filter(between(MPG, 35, 37)) %>% select(1,3, 4,10)%>% arrange(desc(MPG)) 
+
+NBA_Season_Stats %>% filter(between(PPG, 25, 37)) %>% select(1,3, 4,11)%>% arrange(desc(PPG)) 
+
+NBA_Season_Stats %>% filter(between(RPG, 10, 16)) %>% select(1,3, 4,12)%>% arrange(desc(RPG)) 
+
+NBA_Season_Stats %>% filter(between(APG, 7, 11)) %>% select(1,3, 4,13)%>% arrange(desc(APG)) 
+
+NBA_Season_Stats %>% filter(between(SPG, 1.7, 2.4)) %>% select(1,3, 4,14)%>% arrange(desc(SPG))
+
+NBA_Season_Stats %>% filter(between(BPG, 1.5, 2.7)) %>% select(1,3, 4,15)%>% arrange(desc(BPG))
+
+NBA_Season_Stats %>%na.omit%>%select_if(is.numeric) %>% cor()
+```
+
+In part 3, I heavily mutated my dataset NBA_stats in order to get the desired variables, a total of 15, that I want to observe in new my NBA_Season_Stats dataset. I added variables such as MPG (Minutes per Game), PPG (Points per Game), RPG (Rebounds per Game), APG (Assists per Game), SPG (Steals per Game), and BPG (Blocks per Game) because all of those, except MPG, are the five major statistical categories in basketball. The reason I included MPG was to see if there was a correlation in more minutes played per game with more points scored per game, rebounds grabbed per game, etc. The values that I rounded were rounded to correspond to how they usually are displayed in the real world such as in box scores, on websites, etc. Additionally, I used top_n(15) because each NBA team has a max number of 15 roster spots so I assumed that each team had a full roster in order to return information about average of various categories for a full team. In my new dataset, NBA_Season_Stats, I found the number of distinct observations, mean, standard deviation, maximum value, and minimum value for each variable. I got some interesting age related data from the summary statistics in this dataset and what I found was the mean age of an NBA player is 26 years old, the oldest player in the NBA was Vince Carter at 42 years old during the 2018-2019 season, the youngest player in the NBA was actually 18 different players with an age of 19 years old, the youngest team in the NBA was the Chicago Bulls with an average age of 25.2, and the oldest team in the NBA was the Houston Rockets with an average age of 32 years old. 
+
+For other summary statistics, Lebron James played the most minutes with 36.9 MPG, James Harden scored the most points with 36.1 PPG, Andre Drummond grabbed the most rebounds with 16 RPG, and Russell Westbrook dished out the most assists with 10.7 APG, Victor Oladipo stole the ball the most with 2.4 SPG, and Myles Turner swatted the most shots with 2.7 BPG. Other things that I found interesting with the summary statistics is that James Harden had the most PPG in both seasons and actually was ranked first and second for PPG in the dataset, the same was true for Andre Drummond in RPG, and Russell Westbrook in APG; however, there was a different player ranked first and second in SPG and BPG. The most impressive player I noticed in the whole dataset was LeBron James because he was ranked twice in the top 8 for PPG, twice in the top 8 for APG, and he also ranked first in MPG. Lastly, the strongest correlation I found in the matrix was between MPG and PPG with a value of 0.8827646 and the weakest correlation I found was between BPG and x3P_Percentage with -0.0563214. The correlations mean that higher your MPG is the higher your PPG will be and the higher your BPG is the worse your x3P_Percent will be.
+
+##### 4.) Visualizing:
+
+```{R}
+library(reshape2)
+NBA_Cor <-NBA_Season_Stats %>%na.omit%>%select_if(is.numeric) %>% cor()
+NBA_Melt <-melt(NBA_Cor)
+head(NBA_Melt)
+
+library(ggplot2)
+ggplot(data = NBA_Melt, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile(color = "white")+
+  scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+   name="Correlation") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 90, vjust = 1, 
+    size = 8, hjust = 1))+
+ coord_fixed() 
+
+ggplot(data = NBA_Season_Stats, aes(x = MPG, y = PPG, color = Player)) + geom_point(size=4) + ggtitle("PPG vs. MPG for Players During the 2017-2018 and 2018-2019 Seasons") + labs(x="Minutes per Game (MPG)", y=" Points per Game (PPG)") + geom_line() + theme(legend.position = "none")
+
+NBA_Plot <- ggplot(data = NBA_Season_Stats, aes(x = APG, y = PPG, color = Player)) + geom_point(size=4) + ggtitle("PPG vs. APG for Players During the 2017-2018 and 2018-2019 Seasons") + labs(x="Assists per Game (APG)", y=" Points per Game (PPG)") + geom_line() + theme(legend.position = "none") + stat_summary(fun = "mean", colour = "black", size = 1, geom = "point") 
+  
+NBA_Plot + facet_wrap(~Position)
+```
+For plot 1, I noticed that there was a strong correlation, 0.700 or greater, between MPG and PPG, Games_Started and MPG, Games_Started and PPG, MPG and SPG, and RPG and  BPG. The strong correlations make sense because the more minutes you play the more points you should score and steals you should accumulate, the more games you start the more minutes you should play and points you should score, and the more rebounds you get the more shots you should block. The last correlation mentioned, RPG and BPG, makes sense with context because if you're grabbing rebounds you're most likely in the paint and around the basket, which is where most shots get blocked. I noticed a weak correlation, 0.005 or less, between Age and BPG, x3P_Percentage and RPG, x3P_Percentage and BPG. The weak correlations make sense because the older you are the less athletic you get, on average, which means you're less likely to jump up and block someone's shot, and those that are good three point shooters usually don't center their game around playing in the paint and get rebounds and blocking shots, which is why there's a weak correlation between the x3P_Percentage and RPG and x3P_Percentage and BPG.
+
+In plot 2, I noticed a significant trend in points per game (PPG) vs. minutes per game (MPG) across the 2017-2018 and 2018-2019 seasons. I saw a positive trend and correlation in my plot because as minutes per game increased so did points per game. I didn't put labels for each player because there's 1070 observations; however, you can see one signficant outlier in the uppermost right corner for PPG and MPG. The significant outlier mentioned is James Harden and we know this because the output for the filter for the top PPG in part 3 tells us that he's ranked first in second in points scored. We also see from this plot that he also plays among the most minutes per game out of any player. Finally, I would conclude that James Harden was the top offensive player in the NBA during the 2017-2018 and 2018-2019 seasons based on the plot at hand.   
+
+As for plot 3, I noticed that there was a positive trend and correlation in each of the plots shown, excluding the hybrid postitions in this situation, for points per game vs. assists per game during the 2017-2018 and 2018-2019 NBA seasons. The relationship that plots showed is that the more assists one has the more points they usually have too. The position that seemed to have the strongest correlation between PPG and APG is the point guard (PG) and the position that seemed to have the weakest correlation were the power forward (PF). The point guard position having the strongest correlation isn't a surprise since in the modern NBA the point guard scores and passes the ball while the power forward focuses on scoring and grabbing rebounds, which would explain why they have the weakest correlation. 
+
+##### 5.) Dimensionality Reduction:
+
+```{R}
+library(cluster)
+
+NBA_Cluster <- NBA_Season_Stats%>%dplyr::select(MPG,PPG)
+head(daisy(NBA_Cluster, "gower"))
+
+NBA_Cluster2<-NBA_Season_Stats%>%mutate(cluster=sample(c('1','2','3'),1070,replace=T))%>%
+  group_by(cluster)%>%summarize(MPG=mean(MPG),PPG=mean(PPG))
+
+ggplot(NBA_Season_Stats)+geom_point(aes(MPG, PPG, color=Player))+
+  geom_point(data=NBA_Cluster2,aes(MPG,PPG,fill=""),color="black",size=4)+scale_fill_manual(name="NBA_Cluster2",values = "black") + ggtitle("PPG and MPG Clustered") + labs(x = "Minutes per Game (MPG)", y = "Points per Game (PPG)") + theme(legend.position = "none")
+```
+
+For part 5, I made a cluster dataset, NBA_Cluster, using my NBA_Season_Stats dataset and selected MPG and PPG to compare. After that I put in daisy and use the head function to show me the first six gowers. Next, I mutated my NBA_Cluster, grouped it by cluster and summarized it by MPG =mean(MPG) and PPG =mean(PPG) to create a new dataset, NBA_Cluster2. Lastly, I  made a ggplot using NBA_Cluster2 to show the clusters in the data. The final clusters showed that the mean minutes per game (MPG) and mean points per game (PPG) intersect at about 10 PPG and 20 MPG. From the clusters shown, we can infer that the mean points and minutes per game for an NBA player is about 10 PPG and 20 MPG.

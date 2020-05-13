@@ -1,0 +1,338 @@
+---
+title: 'Project 2: Modeling, Testing, and Predicting'
+author: "SDS348"
+date: ''
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+```
+
+Austin Alvarez (apa636)
+
+# Modeling
+
+## Instructions
+
+A knitted R Markdown document (as a PDF) and the raw R Markdown file (as .Rmd) should both be submitted to Canvas by 11:59pm on 5/1/2020. These two documents will be graded jointly, so they must be consistent (i.e., don’t change the R Markdown file without also updating the knitted document). Knit an html copy too, for later! In the .Rmd file for Project 2, you can copy the first code-chunk into your project .Rmd file to get better formatting. Notice that you can adjust the opts_chunk$set(...) above to set certain parameters if necessary to make the knitting cleaner (you can globally set the size of all plots, etc). You can copy the set-up chunk in Project2.Rmd: I have gone ahead and set a few for you (such as disabling warnings and package-loading messges when knitting)! 
+
+Like before, I envision your written text forming something of a narrative structure around your code/output. All results presented must have corresponding code. Any answers/results/plots etc. given without the corresponding R code that generated the result will not be graded. Furthermore, all code contained in your final project document should work properly. Please do not include any extraneous code or code which produces error messages. (Code which produces warnings is acceptable, as long as you understand what the warnings mean).
+
+## Find data:
+
+Find one dataset with at least 5 variables that wish to use to build models. At least one should be categorical (with 2-5 groups) and at least two should be numeric. Ideally, one of your variables will be binary (if not, you will need to create one by discretizing a numeric, which is workable but less than ideal). You will need a minimum of 40 observations (*at least* 10 observations for every explanatory variable you have, ideally 20+ observations/variable).
+
+It is perfectly fine to use either dataset (or the merged dataset, or a subset of your variables) from Project 1. However, you could also diversify your portfolio a bit by choosing a different dataset to work with (particularly if the variables did not reveal interesting associations in Project 1). The only requirement/restriction is that you may not use data from any examples we have done in class or lab. It would be a good idea to pick more cohesive data this time around (i.e., variables that you actually thing might have a relationship you would want to test). Think more along the lines of your Biostats project.
+
+Again, you can use data from anywhere you want (see bottom for resources)! If you want a quick way to see whether a built-in (R) dataset has binary and/or character (i.e., categorical) variables, check out this list: https://vincentarelbundock.github.io/Rdatasets/datasets.html.
+
+
+## Guidelines and Rubric
+
+##### 0.) (5 pts)** Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph. What are they measuring? How many observations?
+
+For this project, I'm reusing my NBA_Season_Stats dataset from Project1. The variables in this dataset are Player, Position, Age, Team, Games_Played, Games_Started, FG_Percent, x3P_Percent, FT_Percent, MPG, PPG, RPG, APG, SPG, and BPG. The variables are measuring age, games played, games started, field goal percentage, three point percentage, free throw percentage, minutes per game, points per game, rebounds per game, assists per game, and blocks per game. In this dataset there are 1070 observations.
+
+##### 1.) (15 pts)** Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all doesn't make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss assumptions and whether or not they are likely to have been met (2).
+
+```{R}
+library(dplyr)
+library(tidyverse)
+library(janitor)
+library(rvest)
+
+url <- "https://www.basketball-reference.com/leagues/NBA_2018_totals.html"
+NBA_stats1 <- url %>% 
+  read_html() %>% 
+  html_table() %>% 
+  .[[1]]
+
+NBA_stats1 <- NBA_stats1 %>% 
+  remove_empty("cols") %>%  
+  clean_names() %>%        
+  dplyr::filter(!player=="Player") %>% 
+  mutate_at(vars(-c(player,tm,pos)),as.numeric) %>% 
+  mutate_at(vars(-c(player,tm,pos)), funs(replace(., is.na(.), 0))) %>% 
+  as_tibble()
+
+NBA_stats1 <- NBA_stats1 %>% 
+  group_by(player) %>% 
+  slice(1) %>% 
+  ungroup() %>%
+  select(-rk)
+  
+url2 <- "https://www.basketball-reference.com/leagues/NBA_2019_totals.html"
+NBA_stats2 <- url2 %>% 
+  read_html() %>% 
+  html_table() %>% 
+  .[[1]]
+
+NBA_stats2 <- NBA_stats2 %>% 
+  remove_empty("cols") %>%  
+  clean_names() %>%        
+  dplyr::filter(!player=="Player") %>% 
+  mutate_at(vars(-c(player,tm,pos)),as.numeric) %>% 
+  mutate_at(vars(-c(player,tm,pos)), funs(replace(., is.na(.), 0))) %>% 
+  as_tibble()
+
+NBA_stats2 <- NBA_stats2 %>% 
+  group_by(player) %>% 
+  slice(1) %>% 
+  ungroup() %>%
+  select(-rk)
+
+NBA_stats <- full_join(NBA_stats1, NBA_stats2, by=c("player", "pos", "age", "tm", "g", "gs", "mp", "fg", "fga", "fg_percent", "x3p", "x3pa", "x3p_percent", "x2p", "x2pa", "x2p_percent", "e_fg_percent", "ft", "fta", "ft_percent", "orb", "drb", "trb", "ast", "stl", "blk", "tov", "pf", "pts")) 
+
+NBA_Season_Stats <- NBA_stats %>% mutate(MPG = mp/g, PPG = pts/g, RPG = trb/g, APG = ast/g, SPG = stl/g, BPG = blk/g) %>% select(1:6, 10, 13, 20, 30:35) %>% mutate_if(is.numeric, round, digits = 3) %>% rename(Player=player, Position=pos, Age=age, Team=tm, Games_Played= g, Games_Started=gs, FG_Percent=fg_percent, x3P_Percent = x3p_percent, FT_Percent=ft_percent) %>% mutate_at(vars(MPG, PPG, RPG, APG, SPG, BPG), round, 1) 
+
+NBA_Season_Stats1 <-NBA_Season_Stats%>%filter(Position %in% c("C", "PF", "SF", "SG", "PG"))
+
+NBA_anova <- manova(cbind(Age, Games_Played, Games_Started, FG_Percent, x3P_Percent, FT_Percent, MPG, PPG, RPG, APG, SPG, BPG)~Position, data=NBA_Season_Stats1)
+summary(NBA_anova)
+
+summary.aov(NBA_anova)
+
+
+pairwise.t.test(NBA_Season_Stats1$FG_Percent, NBA_Season_Stats1$Position, p.adj="none")
+pairwise.t.test(NBA_Season_Stats1$x3P_Percent, NBA_Season_Stats1$Position, p.adj="none")
+pairwise.t.test(NBA_Season_Stats1$FT_Percent, NBA_Season_Stats1$Position, p.adj="none")
+pairwise.t.test(NBA_Season_Stats1$RPG, NBA_Season_Stats1$Position, p.adj="none")
+pairwise.t.test(NBA_Season_Stats1$APG, NBA_Season_Stats1$Position, p.adj="none")
+pairwise.t.test(NBA_Season_Stats1$SPG, NBA_Season_Stats1$Position, p.adj="none")
+pairwise.t.test(NBA_Season_Stats1$BPG, NBA_Season_Stats1$Position, p.adj="none")
+
+#Probability of Type I Error
+1-(0.95)^125
+
+#Significance Level
+.05/125
+```
+
+I have done 125 tests in all with 1 MANOVA test, 12 ANOVA tests, and 112 t tests. The probability of a Type I error is 0.9983577. The significance level I should use if I want to keep the overall type I error rate at .05 is 0.0004. The significant differences are FG_percent, x3P_Percent, FT_Percent, RPG, APG, SPG, and BPG. The assumptions are independence of the observations, no significant outliers, normality, and homegeneity of variance. I think that these assumptions are likely to have been met based off the data at hand.
+
+##### 2.) (10 pts)** Perform some kind of randomization test on your data (that makes sense). This can be anything you want! State null and alternative hypotheses, perform the test, and interpret the results (7). Create a plot visualizing the null distribution and the test statistic (3).
+
+```{R}
+summary(aov(APG~Position,data=NBA_Season_Stats1))
+
+#H0: The mean amount of assists per game scored is the same for all positions
+#HA: The mean amount of assists per game scored is different for all positions
+
+#Randomization test
+NBA_obs <- 75.1
+NBA_rand<-replicate(5000,{ 
+new_APG<-NBA_Season_Stats1%>%mutate(APG=sample(APG)) 
+
+SSW3<- new_APG%>%group_by(Position)%>%summarize(SSW3=sum((APG-mean(APG))^2))%>%
+summarize(sum(SSW3))%>%pull
+SSB3<- new_APG%>%mutate(mean=mean(APG))%>%group_by(Position)%>%mutate(groupmean=mean(APG))%>%
+summarize(SSB3=sum((mean-groupmean)^2))%>%summarize(sum(SSB3))%>%pull
+(SSB3/4)/(SSW3/1054) 
+})
+
+mean(NBA_rand>NBA_obs) #p-value
+
+ggplot(NBA_Season_Stats1,aes(PPG,fill=Position))+geom_histogram(bins=10)+facet_wrap(~Position,ncol=2)+theme(legend.position="none")
+```
+
+I  reject the null hypothesis because the p-value obtained from the randomization test was less than 0.05. The p-value means that the mean amount of assists per game scored is different for all positions.
+
+##### 3.) (35 pts)** Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction. Mean-center any numeric variables involved in the interaction.
+
+    - Interpret the coefficient estimates (do not discuss significance) (10)
+    - Plot the regression using `ggplot()`. If your interaction is numeric by numeric, refer to code near the end of WS15 to make the plot. If you have 3 or more predictors, just chose two to plot for convenience. (8)
+    - Check assumptions of linearity, normality, and homoskedasticity either graphically or using a hypothesis test (4)
+    - Regardless, recompute regression results with robust standard errors via `coeftest(..., vcov=vcovHC(...))`. Discuss significance of results, including any changes from before/after robust SEs if applicable. (8)
+    - What proportion of the variation in the outcome does your model explain? (4)
+
+```{R}
+library(lmtest)
+library(sandwich)
+
+NBA_Season_Stats2 <-NBA_Season_Stats%>%filter(Position %in% c("C", "PF", "SF", "SG", "PG"))
+NBA_Season_Stats2$Games_Started <- NBA_Season_Stats2$Games_Started-mean(NBA_Season_Stats2$Games_Started)
+NBA_Season_Stats2$MPG <- NBA_Season_Stats2$MPG-mean(NBA_Season_Stats2$MPG)
+NBA_Season_Stats2$PPG <- NBA_Season_Stats2$PPG-mean(NBA_Season_Stats2$PPG)
+
+NBA_fit<-lm(Games_Started~MPG*PPG, data=NBA_Season_Stats2)
+coef(NBA_fit)
+
+c<-scale(NBA_Season_Stats2$PPG) 
+d<-scale(NBA_Season_Stats2$Games_Started)
+e<- scale(NBA_Season_Stats2$MPG)
+NBA_plot1 <- ggplot(data.frame(c,d,e), aes(c,d,e))+geom_point()+geom_smooth(method="lm",se=F)+ggtitle("Interaction of Points Per Game by Games Started") + labs(x="PPG", y="Games Started")+geom_hline(yintercept=0, color='red')
+NBA_plot1
+
+resids<-NBA_fit$residuals
+fitvals<-NBA_fit$fitted.values
+NBA_plot2 <-ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, col="red") #Linearity 
+NBA_plot2
+
+shapiro.test(resids) #Normality
+bptest(NBA_fit) #Homoskedasticity
+
+coeftest(NBA_fit) #Original SEs
+coeftest(NBA_fit, vcov = vcovHC(NBA_fit)) #Robust SEs
+
+summary(NBA_fit) #Variation
+```
+
+The coefficient estimates from NBA_fit indicate that the MPG and the interaction of MPG and PPG with respect to games started is significant. The plot shows that PPG and MPG increase with the amount of games started. The plot for fitted and residual values shows a negative relationship between the two as residual values decrease as fitted values increase. The probability for the robust SEs decrease slightly compared to the original SEs while the standard error for robust SEs increase slightly compared to the original SEs. The proportion of the variation in the outcome of my model is 0.7033 which is a high percent of variance for the model.
+
+##### 4.) (5 pts)** Rerun same regression model (with interaction), but this time compute bootstrapped standard errors. Discuss any changes you observe in SEs and p-values using these SEs compared to the original SEs and the robust SEs)
+
+```{R}
+set.seed(348)
+
+NBA_samp<-replicate(5000, {
+NBA_boot <- sample_frac(NBA_Season_Stats2, replace=T) 
+fit4<-lm(Games_Started~MPG*PPG, data=NBA_Season_Stats2)
+coef(fit4) 
+})
+
+## Estimated SEs
+NBA_samp %>% t %>% as.data.frame %>% summarize_all(sd)
+```
+
+I see changes in p-values and SEs from the original and robust SEs before. The changes from the bootstrap are that p-values and SEs are than the SEs and p-values from the original and robust SEs.
+
+##### 5.) (40 pts)** Perform a logistic regression predicting a binary categorical variable (if you don't have one, make/get one) from at least two explanatory variables (interaction not necessary). 
+
+    - Interpret coefficient estimates in context (10)
+    - Report a confusion matrix for your logistic regression (2)
+    - Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), and Recall (PPV) of your model (5)
+    - Using ggplot, plot density of log-odds (logit) by your binary outcome variable (3)
+    - Generate an ROC curve (plot) and calculate AUC (either manually or with a package); interpret (10)
+    - Perform 10-fold (or repeated random sub-sampling) CV and report average out-of-sample Accuracy, Sensitivity, and Recall (10)
+
+```{R}
+library(pROC)
+library(plotROC)
+NBA_data<-NBA_Season_Stats2%>%mutate(y=ifelse(Position=="PG",1,0))
+
+NBA_fit2<-glm(y~PPG+RPG+APG,data=NBA_data,family=binomial(link="logit"))
+summary(NBA_fit2)
+coeftest(NBA_fit2)
+exp(coef(NBA_fit2))
+
+NBA_prob <- predict(NBA_fit2,type="response") 
+table(predict=as.numeric(NBA_prob>.5),truth=NBA_data$y)%>%addmargins
+(806+133)/1059 #accuracy
+806/890 #sensitivity (TPR)
+133/217 #specificity (TNR)
+806/842 #recall (PPV)
+
+NBA_plot<-ggplot(NBA_fit2)+geom_roc(aes(d=y,m=NBA_fit2$linear.predictors), n.cuts=0)
+NBA_plot
+
+calc_auc(NBA_plot) #AUC
+
+set.seed(1234)
+k=10
+data <- NBA_data %>% sample_frac 
+folds1 <- ntile(1:nrow(data),n=10) 
+diags1<-NULL
+for(i in 1:k){
+train1 <- data[folds1!=i,]
+test1 <- data[folds1==i,] 
+truth1 <- test1$y 
+fit <- glm(y~.,data=NBA_data,family=binomial(link="logit"))
+probs1 <- predict(fit, newdata=test1, type="response")
+diags1<-rbind(diags1,class_diag(probs1,truth1))
+}
+summarize_all(diags1,mean)
+```
+
+The coefficient estimates obtained indicate that PPG, RPG, and APG for point guards (PG) are significant. The coefficient estimates mean that PPG, RPG, and APG increase with the position. The accuracy, sensitivity, specificity, and recall of my model are 0.8866856, 0.905618, 0.6129032, and 0.9572447, respectively. My model indicates that I have a high accuracy, sensitivity, and recall while my specificity is above average. My ROC plot shows a pretty high and good curve and the AUC I obtained was an AUC of 0.9385406. This AUC for my ROC plot is considered great since it falls in the great range of 0.9 to 1. The average out-of-sample accuracy, sensitivity, and recall are each 1.
+
+##### 6.) (10 pts)** Choose one variable you want to predict (can be one you used from before; either binary or continuous) and run a LASSO regression inputting all the rest of your variables as predictors. Choose lambda to give the simplest model whose accuracy is near that of the best (i.e., `lambda.1se`). Discuss which variables are retained. Perform 10-fold CV using this model: if response in binary, compare model's out-of-sample accuracy to that of your logistic regression in part 5; if response is numeric, compare the residual standard error (at the bottom of the summary output, aka RMSE): lower is better fit!
+
+```{R}
+library(glmnet)
+set.seed(1234)
+
+n<-as.matrix(NBA_data$y)
+m <-model.matrix(y~.,data = NBA_data)[,-1] 
+
+cv1<-cv.glmnet(m,n, family = "binomial")
+NBA_lasso<-glmnet(m,n,family="binomial",lambda=cv1$lambda.1se)
+coef(NBA_lasso)
+
+NBA_truth <-NBA_data$y
+NBA_prob2<-predict(NBA_lasso, newx=m, type="response")
+class_diag(NBA_prob2,NBA_truth)
+
+table(predicted=NBA_prob2>.5,NBA_truth)%>%addmargins
+(842+217)/1059 #accuracy
+217/217 #sensitivity 
+842/842 #specificity
+
+set.seed(1234)
+k=10
+data <- NBA_data %>% sample_frac 
+folds1 <- ntile(1:nrow(data),n=10) 
+diags1<-NULL
+for(i in 1:k){
+train1 <- data[folds1!=i,]
+test1 <- data[folds1==i,] 
+truth1 <- test1$y 
+fit <- glm(y~.,data=NBA_data,family=binomial(link="logit"))
+probs1 <- predict(fit, newdata=test1, type="response")
+diags1<-rbind(diags1,class_diag(probs1,truth1))
+}
+summarize_all(diags1,mean)
+```
+
+The variables that retained are PositionPG. The model's out-of-sample accuracy compared that of the logistical regression in part 5 is the same since they're both 1.
+
+
+

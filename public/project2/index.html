@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Austin Alvarez" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../blog/">BLOG</a></li>
+        
+        <li><a href="../projects/">PROJECTS</a></li>
+        
+        <li><a href="../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../project2/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<p>Austin Alvarez (apa636)</p>
+<div id="modeling" class="section level1">
+<h1>Modeling</h1>
+<div id="instructions" class="section level2">
+<h2>Instructions</h2>
+<p>A knitted R Markdown document (as a PDF) and the raw R Markdown file (as .Rmd) should both be submitted to Canvas by 11:59pm on 5/1/2020. These two documents will be graded jointly, so they must be consistent (i.e., don’t change the R Markdown file without also updating the knitted document). Knit an html copy too, for later! In the .Rmd file for Project 2, you can copy the first code-chunk into your project .Rmd file to get better formatting. Notice that you can adjust the opts_chunk$set(…) above to set certain parameters if necessary to make the knitting cleaner (you can globally set the size of all plots, etc). You can copy the set-up chunk in Project2.Rmd: I have gone ahead and set a few for you (such as disabling warnings and package-loading messges when knitting)!</p>
+<p>Like before, I envision your written text forming something of a narrative structure around your code/output. All results presented must have corresponding code. Any answers/results/plots etc. given without the corresponding R code that generated the result will not be graded. Furthermore, all code contained in your final project document should work properly. Please do not include any extraneous code or code which produces error messages. (Code which produces warnings is acceptable, as long as you understand what the warnings mean).</p>
+</div>
+<div id="find-data" class="section level2">
+<h2>Find data:</h2>
+<p>Find one dataset with at least 5 variables that wish to use to build models. At least one should be categorical (with 2-5 groups) and at least two should be numeric. Ideally, one of your variables will be binary (if not, you will need to create one by discretizing a numeric, which is workable but less than ideal). You will need a minimum of 40 observations (<em>at least</em> 10 observations for every explanatory variable you have, ideally 20+ observations/variable).</p>
+<p>It is perfectly fine to use either dataset (or the merged dataset, or a subset of your variables) from Project 1. However, you could also diversify your portfolio a bit by choosing a different dataset to work with (particularly if the variables did not reveal interesting associations in Project 1). The only requirement/restriction is that you may not use data from any examples we have done in class or lab. It would be a good idea to pick more cohesive data this time around (i.e., variables that you actually thing might have a relationship you would want to test). Think more along the lines of your Biostats project.</p>
+<p>Again, you can use data from anywhere you want (see bottom for resources)! If you want a quick way to see whether a built-in (R) dataset has binary and/or character (i.e., categorical) variables, check out this list: <a href="https://vincentarelbundock.github.io/Rdatasets/datasets.html" class="uri">https://vincentarelbundock.github.io/Rdatasets/datasets.html</a>.</p>
+</div>
+<div id="guidelines-and-rubric" class="section level2">
+<h2>Guidelines and Rubric</h2>
+<div id="pts-introduce-your-dataset-and-each-of-your-variables-or-just-your-main-variables-if-you-have-lots-in-a-paragraph.-what-are-they-measuring-how-many-observations" class="section level5">
+<h5>0.) (5 pts)** Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph. What are they measuring? How many observations?</h5>
+<p>For this project, I’m reusing my NBA_Season_Stats dataset from Project1. The variables in this dataset are Player, Position, Age, Team, Games_Played, Games_Started, FG_Percent, x3P_Percent, FT_Percent, MPG, PPG, RPG, APG, SPG, and BPG. The variables are measuring age, games played, games started, field goal percentage, three point percentage, free throw percentage, minutes per game, points per game, rebounds per game, assists per game, and blocks per game. In this dataset there are 1070 observations.</p>
+</div>
+<div id="pts-perform-a-manova-testing-whether-any-of-your-numeric-variables-or-a-subset-of-them-if-including-them-all-doesnt-make-sense-show-a-mean-difference-across-levels-of-one-of-your-categorical-variables-3.-if-they-do-perform-univariate-anovas-to-find-responses-showing-a-mean-difference-across-groups-3-and-perform-post-hoc-t-tests-to-find-which-groups-differ-3.-discuss-the-number-of-tests-you-have-performed-calculate-the-probability-of-at-least-one-type-i-error-if-unadjusted-and-adjust-the-significance-level-accordingly-bonferroni-correction-before-discussing-significant-differences-3.-briefly-discuss-assumptions-and-whether-or-not-they-are-likely-to-have-been-met-2." class="section level5">
+<h5>1.) (15 pts)** Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all doesn’t make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss assumptions and whether or not they are likely to have been met (2).</h5>
+<pre class="r"><code>library(dplyr)
+library(tidyverse)
+library(janitor)
+library(rvest)
+
+url &lt;- &quot;https://www.basketball-reference.com/leagues/NBA_2018_totals.html&quot;
+NBA_stats1 &lt;- url %&gt;% 
+  read_html() %&gt;% 
+  html_table() %&gt;% 
+  .[[1]]
+
+NBA_stats1 &lt;- NBA_stats1 %&gt;% 
+  remove_empty(&quot;cols&quot;) %&gt;%  
+  clean_names() %&gt;%        
+  dplyr::filter(!player==&quot;Player&quot;) %&gt;% 
+  mutate_at(vars(-c(player,tm,pos)),as.numeric) %&gt;% 
+  mutate_at(vars(-c(player,tm,pos)), funs(replace(., is.na(.), 0))) %&gt;% 
+  as_tibble()
+
+NBA_stats1 &lt;- NBA_stats1 %&gt;% 
+  group_by(player) %&gt;% 
+  slice(1) %&gt;% 
+  ungroup() %&gt;%
+  select(-rk)
+  
+url2 &lt;- &quot;https://www.basketball-reference.com/leagues/NBA_2019_totals.html&quot;
+NBA_stats2 &lt;- url2 %&gt;% 
+  read_html() %&gt;% 
+  html_table() %&gt;% 
+  .[[1]]
+
+NBA_stats2 &lt;- NBA_stats2 %&gt;% 
+  remove_empty(&quot;cols&quot;) %&gt;%  
+  clean_names() %&gt;%        
+  dplyr::filter(!player==&quot;Player&quot;) %&gt;% 
+  mutate_at(vars(-c(player,tm,pos)),as.numeric) %&gt;% 
+  mutate_at(vars(-c(player,tm,pos)), funs(replace(., is.na(.), 0))) %&gt;% 
+  as_tibble()
+
+NBA_stats2 &lt;- NBA_stats2 %&gt;% 
+  group_by(player) %&gt;% 
+  slice(1) %&gt;% 
+  ungroup() %&gt;%
+  select(-rk)
+
+NBA_stats &lt;- full_join(NBA_stats1, NBA_stats2, by=c(&quot;player&quot;, &quot;pos&quot;, &quot;age&quot;, &quot;tm&quot;, &quot;g&quot;, &quot;gs&quot;, &quot;mp&quot;, &quot;fg&quot;, &quot;fga&quot;, &quot;fg_percent&quot;, &quot;x3p&quot;, &quot;x3pa&quot;, &quot;x3p_percent&quot;, &quot;x2p&quot;, &quot;x2pa&quot;, &quot;x2p_percent&quot;, &quot;e_fg_percent&quot;, &quot;ft&quot;, &quot;fta&quot;, &quot;ft_percent&quot;, &quot;orb&quot;, &quot;drb&quot;, &quot;trb&quot;, &quot;ast&quot;, &quot;stl&quot;, &quot;blk&quot;, &quot;tov&quot;, &quot;pf&quot;, &quot;pts&quot;)) 
+
+NBA_Season_Stats &lt;- NBA_stats %&gt;% mutate(MPG = mp/g, PPG = pts/g, RPG = trb/g, APG = ast/g, SPG = stl/g, BPG = blk/g) %&gt;% select(1:6, 10, 13, 20, 30:35) %&gt;% mutate_if(is.numeric, round, digits = 3) %&gt;% rename(Player=player, Position=pos, Age=age, Team=tm, Games_Played= g, Games_Started=gs, FG_Percent=fg_percent, x3P_Percent = x3p_percent, FT_Percent=ft_percent) %&gt;% mutate_at(vars(MPG, PPG, RPG, APG, SPG, BPG), round, 1) 
+
+NBA_Season_Stats1 &lt;-NBA_Season_Stats%&gt;%filter(Position %in% c(&quot;C&quot;, &quot;PF&quot;, &quot;SF&quot;, &quot;SG&quot;, &quot;PG&quot;))
+
+NBA_anova &lt;- manova(cbind(Age, Games_Played, Games_Started, FG_Percent, x3P_Percent, FT_Percent, MPG, PPG, RPG, APG, SPG, BPG)~Position, data=NBA_Season_Stats1)
+summary(NBA_anova)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## Position 4 1.0097 29.432 48 4184 &lt; 2.2e-16 ***
+## Residuals 1054
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(NBA_anova)</code></pre>
+<pre><code>## Response Age :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 120 29.988 1.7297 0.1411
+## Residuals 1054 18274 17.337
+##
+## Response Games_Played :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 5681 1420.36 1.9816 0.09516 .
+## Residuals 1054 755494 716.79
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response Games_Started :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 4070 1017.43 1.3006 0.2679
+## Residuals 1054 824535 782.29
+##
+## Response FG_Percent :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 1.8828 0.47070 40.467 &lt; 2.2e-16 ***
+## Residuals 1054 12.2599 0.01163
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response x3P_Percent :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 3.518 0.87951 40.52 &lt; 2.2e-16 ***
+## Residuals 1054 22.878 0.02171
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response FT_Percent :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 0.673 0.168228 3.363 0.009563 **
+## Residuals 1054 52.725 0.050024
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response MPG :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 756 189.104 2.2146 0.0655 .
+## Residuals 1054 90000 85.389
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response PPG :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 204 50.914 1.3997 0.232
+## Residuals 1054 38339 36.375
+##
+## Response RPG :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 1517.9 379.47 79.319 &lt; 2.2e-16 ***
+## Residuals 1054 5042.5 4.78
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response APG :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 720.01 180.003 75.103 &lt; 2.2e-16 ***
+## Residuals 1054 2526.17 2.397
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response SPG :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 9.61 2.4026 13.729 6.433e-11 ***
+## Residuals 1054 184.45 0.1750
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response BPG :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 43.90 10.9750 93.484 &lt; 2.2e-16 ***
+## Residuals 1054 123.74 0.1174
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>pairwise.t.test(NBA_Season_Stats1$FG_Percent, NBA_Season_Stats1$Position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: NBA_Season_Stats1$FG_Percent and
+NBA_Season_Stats1$Position
+##
+## C PF PG SF
+## PF 5.5e-14 - - -
+## PG &lt; 2e-16 0.02564 - -
+## SF &lt; 2e-16 0.04146 0.94972 -
+## SG &lt; 2e-16 0.00021 0.16246 0.17004
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(NBA_Season_Stats1$x3P_Percent, NBA_Season_Stats1$Position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: NBA_Season_Stats1$x3P_Percent and
+NBA_Season_Stats1$Position
+##
+## C PF PG SF
+## PF 2.1e-14 - - -
+## PG &lt; 2e-16 0.0036 - -
+## SF &lt; 2e-16 0.0740 0.3342 -
+## SG &lt; 2e-16 0.0019 0.9497 0.2875
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(NBA_Season_Stats1$FT_Percent, NBA_Season_Stats1$Position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: NBA_Season_Stats1$FT_Percent and
+NBA_Season_Stats1$Position
+##
+## C PF PG SF
+## PF 0.8303 - - -
+## PG 0.0021 0.0037 - -
+## SF 0.6514 0.8020 0.0123 -
+## SG 0.0894 0.1353 0.1193 0.2506
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(NBA_Season_Stats1$RPG, NBA_Season_Stats1$Position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: NBA_Season_Stats1$RPG and
+NBA_Season_Stats1$Position
+##
+## C PF PG SF
+## PF 8.5e-13 - - -
+## PG &lt; 2e-16 5.8e-13 - -
+## SF &lt; 2e-16 0.00015 0.00202 -
+## SG &lt; 2e-16 4.9e-16 0.53228 0.00015
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(NBA_Season_Stats1$APG, NBA_Season_Stats1$Position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: NBA_Season_Stats1$APG and
+NBA_Season_Stats1$Position
+##
+## C PF PG SF
+## PF 0.60608 - - -
+## PG &lt; 2e-16 &lt; 2e-16 - -
+## SF 0.55782 0.27634 &lt; 2e-16 -
+## SG 0.00091 9.3e-05 &lt; 2e-16 0.01044
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(NBA_Season_Stats1$SPG, NBA_Season_Stats1$Position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: NBA_Season_Stats1$SPG and
+NBA_Season_Stats1$Position
+##
+## C PF PG SF
+## PF 0.74470 - - -
+## PG 1.2e-08 1.1e-09 - -
+## SF 0.00012 2.7e-05 0.11325 -
+## SG 0.00187 0.00047 0.00327 0.26798
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(NBA_Season_Stats1$BPG, NBA_Season_Stats1$Position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: NBA_Season_Stats1$BPG and
+NBA_Season_Stats1$Position
+##
+## C PF PG SF
+## PF &lt; 2e-16 - - -
+## PG &lt; 2e-16 2.7e-10 - -
+## SF &lt; 2e-16 0.02369 0.00017 -
+## SG &lt; 2e-16 1.4e-09 0.57427 0.00071
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>#Probability of Type I Error
+1-(0.95)^125</code></pre>
+<pre><code>## [1] 0.9983577</code></pre>
+<pre class="r"><code>#Significance Level
+.05/125</code></pre>
+<pre><code>## [1] 4e-04</code></pre>
+<p>I have done 125 tests in all with 1 MANOVA test, 12 ANOVA tests, and 112 t tests. The probability of a Type I error is 0.9983577. The significance level I should use if I want to keep the overall type I error rate at .05 is 0.0004. The significant differences are FG_percent, x3P_Percent, FT_Percent, RPG, APG, SPG, and BPG. The assumptions are independence of the observations, no significant outliers, normality, and homegeneity of variance. I think that these assumptions are likely to have been met based off the data at hand.</p>
+</div>
+<div id="pts-perform-some-kind-of-randomization-test-on-your-data-that-makes-sense.-this-can-be-anything-you-want-state-null-and-alternative-hypotheses-perform-the-test-and-interpret-the-results-7.-create-a-plot-visualizing-the-null-distribution-and-the-test-statistic-3." class="section level5">
+<h5>2.) (10 pts)** Perform some kind of randomization test on your data (that makes sense). This can be anything you want! State null and alternative hypotheses, perform the test, and interpret the results (7). Create a plot visualizing the null distribution and the test statistic (3).</h5>
+<pre class="r"><code>summary(aov(APG~Position,data=NBA_Season_Stats1))</code></pre>
+<pre><code>## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Position 4 720 180.0 75.1 &lt;2e-16 ***
+## Residuals 1054 2526 2.4
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>#H0: The mean amount of assists per game scored is the same for all positions
+#HA: The mean amount of assists per game scored is different for all positions
+
+#Randomization test
+NBA_obs &lt;- 75.1
+NBA_rand&lt;-replicate(5000,{ 
+new_APG&lt;-NBA_Season_Stats1%&gt;%mutate(APG=sample(APG)) 
+
+SSW3&lt;- new_APG%&gt;%group_by(Position)%&gt;%summarize(SSW3=sum((APG-mean(APG))^2))%&gt;%
+summarize(sum(SSW3))%&gt;%pull
+SSB3&lt;- new_APG%&gt;%mutate(mean=mean(APG))%&gt;%group_by(Position)%&gt;%mutate(groupmean=mean(APG))%&gt;%
+summarize(SSB3=sum((mean-groupmean)^2))%&gt;%summarize(sum(SSB3))%&gt;%pull
+(SSB3/4)/(SSW3/1054) 
+})
+
+mean(NBA_rand&gt;NBA_obs) #p-value</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>ggplot(NBA_Season_Stats1,aes(PPG,fill=Position))+geom_histogram(bins=10)+facet_wrap(~Position,ncol=2)+theme(legend.position=&quot;none&quot;)</code></pre>
+<p><img src="../project2_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>I reject the null hypothesis because the p-value obtained from the randomization test was less than 0.05. The p-value means that the mean amount of assists per game scored is different for all positions.</p>
+</div>
+<div id="pts-build-a-linear-regression-model-predicting-one-of-your-response-variables-from-at-least-2-other-variables-including-their-interaction.-mean-center-any-numeric-variables-involved-in-the-interaction." class="section level5">
+<h5>3.) (35 pts)** Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction. Mean-center any numeric variables involved in the interaction.</h5>
+<pre><code>- Interpret the coefficient estimates (do not discuss significance) (10)
+- Plot the regression using `ggplot()`. If your interaction is numeric by numeric, refer to code near the end of WS15 to make the plot. If you have 3 or more predictors, just chose two to plot for convenience. (8)
+- Check assumptions of linearity, normality, and homoskedasticity either graphically or using a hypothesis test (4)
+- Regardless, recompute regression results with robust standard errors via `coeftest(..., vcov=vcovHC(...))`. Discuss significance of results, including any changes from before/after robust SEs if applicable. (8)
+- What proportion of the variation in the outcome does your model explain? (4)</code></pre>
+<pre class="r"><code>library(lmtest)
+library(sandwich)
+
+NBA_Season_Stats2 &lt;-NBA_Season_Stats%&gt;%filter(Position %in% c(&quot;C&quot;, &quot;PF&quot;, &quot;SF&quot;, &quot;SG&quot;, &quot;PG&quot;))
+NBA_Season_Stats2$Games_Started &lt;- NBA_Season_Stats2$Games_Started-mean(NBA_Season_Stats2$Games_Started)
+NBA_Season_Stats2$MPG &lt;- NBA_Season_Stats2$MPG-mean(NBA_Season_Stats2$MPG)
+NBA_Season_Stats2$PPG &lt;- NBA_Season_Stats2$PPG-mean(NBA_Season_Stats2$PPG)
+
+NBA_fit&lt;-lm(Games_Started~MPG*PPG, data=NBA_Season_Stats2)
+coef(NBA_fit)</code></pre>
+<pre><code>## (Intercept)         MPG         PPG     MPG:PPG 
+##  -7.8257232   3.2295395  -1.7406966   0.1587636</code></pre>
+<pre class="r"><code>c&lt;-scale(NBA_Season_Stats2$PPG) 
+d&lt;-scale(NBA_Season_Stats2$Games_Started)
+e&lt;- scale(NBA_Season_Stats2$MPG)
+NBA_plot1 &lt;- ggplot(data.frame(c,d,e), aes(c,d,e))+geom_point()+geom_smooth(method=&quot;lm&quot;,se=F)+ggtitle(&quot;Interaction of Points Per Game by Games Started&quot;) + labs(x=&quot;PPG&quot;, y=&quot;Games Started&quot;)+geom_hline(yintercept=0, color=&#39;red&#39;)
+NBA_plot1</code></pre>
+<p><img src="../project2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>resids&lt;-NBA_fit$residuals
+fitvals&lt;-NBA_fit$fitted.values
+NBA_plot2 &lt;-ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, col=&quot;red&quot;) #Linearity 
+NBA_plot2</code></pre>
+<p><img src="../project2_files/figure-html/unnamed-chunk-3-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>shapiro.test(resids) #Normality</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resids
+## W = 0.97819, p-value = 1.611e-11</code></pre>
+<pre class="r"><code>bptest(NBA_fit) #Homoskedasticity</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  NBA_fit
+## BP = 155.43, df = 3, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>coeftest(NBA_fit) #Original SEs</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -7.825723 0.730458 -10.7135 &lt; 2.2e-16 ***
+## MPG 3.229539 0.141341 22.8493 &lt; 2.2e-16 ***
+## PPG -1.740697 0.246539 -7.0605 3.004e-12 ***
+## MPG:PPG 0.158764 0.011359 13.9764 &lt; 2.2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(NBA_fit, vcov = vcovHC(NBA_fit)) #Robust SEs</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -7.825723 0.773222 -10.1209 &lt; 2.2e-16 ***
+## MPG 3.229539 0.177315 18.2135 &lt; 2.2e-16 ***
+## PPG -1.740697 0.303443 -5.7365 1.262e-08 ***
+## MPG:PPG 0.158764 0.011096 14.3085 &lt; 2.2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>summary(NBA_fit) #Variation</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = Games_Started ~ MPG * PPG, data =
+NBA_Season_Stats2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -65.693 -8.474 -0.558 7.230 57.074
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -7.82572 0.73046 -10.713 &lt;2e-16 ***
+## MPG 3.22954 0.14134 22.849 &lt;2e-16 ***
+## PPG -1.74070 0.24654 -7.061 3e-12 ***
+## MPG:PPG 0.15876 0.01136 13.976 &lt;2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 15.27 on 1055 degrees of
+freedom
+## Multiple R-squared: 0.7033, Adjusted R-squared: 0.7024
+## F-statistic: 833.6 on 3 and 1055 DF, p-value: &lt; 2.2e-16</code></pre>
+<p>The coefficient estimates from NBA_fit indicate that the MPG and the interaction of MPG and PPG with respect to games started is significant. The plot shows that PPG and MPG increase with the amount of games started. The plot for fitted and residual values shows a negative relationship between the two as residual values decrease as fitted values increase. The probability for the robust SEs decrease slightly compared to the original SEs while the standard error for robust SEs increase slightly compared to the original SEs. The proportion of the variation in the outcome of my model is 0.7033 which is a high percent of variance for the model.</p>
+</div>
+<div id="pts-rerun-same-regression-model-with-interaction-but-this-time-compute-bootstrapped-standard-errors.-discuss-any-changes-you-observe-in-ses-and-p-values-using-these-ses-compared-to-the-original-ses-and-the-robust-ses" class="section level5">
+<h5>4.) (5 pts)** Rerun same regression model (with interaction), but this time compute bootstrapped standard errors. Discuss any changes you observe in SEs and p-values using these SEs compared to the original SEs and the robust SEs)</h5>
+<pre class="r"><code>set.seed(348)
+
+NBA_samp&lt;-replicate(5000, {
+NBA_boot &lt;- sample_frac(NBA_Season_Stats2, replace=T) 
+fit4&lt;-lm(Games_Started~MPG*PPG, data=NBA_Season_Stats2)
+coef(fit4) 
+})
+
+## Estimated SEs
+NBA_samp %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept) MPG PPG MPG:PPG
+## 1           0   0   0       0</code></pre>
+<p>I see changes in p-values and SEs from the original and robust SEs before. The changes from the bootstrap are that p-values and SEs are than the SEs and p-values from the original and robust SEs.</p>
+</div>
+<div id="pts-perform-a-logistic-regression-predicting-a-binary-categorical-variable-if-you-dont-have-one-makeget-one-from-at-least-two-explanatory-variables-interaction-not-necessary." class="section level5">
+<h5>5.) (40 pts)** Perform a logistic regression predicting a binary categorical variable (if you don’t have one, make/get one) from at least two explanatory variables (interaction not necessary).</h5>
+<pre><code>- Interpret coefficient estimates in context (10)
+- Report a confusion matrix for your logistic regression (2)
+- Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), and Recall (PPV) of your model (5)
+- Using ggplot, plot density of log-odds (logit) by your binary outcome variable (3)
+- Generate an ROC curve (plot) and calculate AUC (either manually or with a package); interpret (10)
+- Perform 10-fold (or repeated random sub-sampling) CV and report average out-of-sample Accuracy, Sensitivity, and Recall (10)</code></pre>
+<pre class="r"><code>library(pROC)
+library(plotROC)
+NBA_data&lt;-NBA_Season_Stats2%&gt;%mutate(y=ifelse(Position==&quot;PG&quot;,1,0))
+
+NBA_fit2&lt;-glm(y~PPG+RPG+APG,data=NBA_data,family=binomial(link=&quot;logit&quot;))
+summary(NBA_fit2)</code></pre>
+<pre><code>##
+## Call:
+## glm(formula = y ~ PPG + RPG + APG, family =
+binomial(link = &quot;logit&quot;),
+## data = NBA_data)
+##
+## Deviance Residuals:
+## Min 1Q Median 3Q Max
+## -2.7453 -0.4236 -0.1560 -0.0091 2.8379
+##
+## Coefficients:
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -2.31744 0.33112 -6.999 2.58e-12 ***
+## PPG -0.17975 0.03557 -5.054 4.33e-07 ***
+## RPG -1.21096 0.12808 -9.455 &lt; 2e-16 ***
+## APG 1.87294 0.14050 13.330 &lt; 2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## (Dispersion parameter for binomial family taken to be 1)
+##
+## Null deviance: 1074.11 on 1058 degrees of freedom
+## Residual deviance: 548.71 on 1055 degrees of freedom
+## AIC: 556.71
+##
+## Number of Fisher Scoring iterations: 7</code></pre>
+<pre class="r"><code>coeftest(NBA_fit2)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -2.317441 0.331117 -6.9988 2.581e-12 ***
+## PPG -0.179754 0.035569 -5.0537 4.334e-07 ***
+## RPG -1.210961 0.128083 -9.4545 &lt; 2.2e-16 ***
+## APG 1.872943 0.140502 13.3304 &lt; 2.2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(NBA_fit2))</code></pre>
+<pre><code>## (Intercept)         PPG         RPG         APG 
+##  0.09852539  0.83547589  0.29791071  6.50742181</code></pre>
+<pre class="r"><code>NBA_prob &lt;- predict(NBA_fit2,type=&quot;response&quot;) 
+table(predict=as.numeric(NBA_prob&gt;.5),truth=NBA_data$y)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict    0    1  Sum
+##     0    806   84  890
+##     1     36  133  169
+##     Sum  842  217 1059</code></pre>
+<pre class="r"><code>(806+133)/1059 #accuracy</code></pre>
+<pre><code>## [1] 0.8866856</code></pre>
+<pre class="r"><code>806/890 #sensitivity (TPR)</code></pre>
+<pre><code>## [1] 0.905618</code></pre>
+<pre class="r"><code>133/217 #specificity (TNR)</code></pre>
+<pre><code>## [1] 0.6129032</code></pre>
+<pre class="r"><code>806/842 #recall (PPV)</code></pre>
+<pre><code>## [1] 0.9572447</code></pre>
+<pre class="r"><code>NBA_plot&lt;-ggplot(NBA_fit2)+geom_roc(aes(d=y,m=NBA_fit2$linear.predictors), n.cuts=0)
+NBA_plot</code></pre>
+<p><img src="../project2_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(NBA_plot) #AUC</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.9385406</code></pre>
+<pre class="r"><code>set.seed(1234)
+k=10
+data &lt;- NBA_data %&gt;% sample_frac 
+folds1 &lt;- ntile(1:nrow(data),n=10) 
+diags1&lt;-NULL
+for(i in 1:k){
+train1 &lt;- data[folds1!=i,]
+test1 &lt;- data[folds1==i,] 
+truth1 &lt;- test1$y 
+fit &lt;- glm(y~.,data=NBA_data,family=binomial(link=&quot;logit&quot;))
+probs1 &lt;- predict(fit, newdata=test1, type=&quot;response&quot;)
+diags1&lt;-rbind(diags1,class_diag(probs1,truth1))
+}
+summarize_all(diags1,mean)</code></pre>
+<pre><code>##   acc sens spec ppv auc
+## 1   1    1    1   1   1</code></pre>
+<p>The coefficient estimates obtained indicate that PPG, RPG, and APG for point guards (PG) are significant. The coefficient estimates mean that PPG, RPG, and APG increase with the position. The accuracy, sensitivity, specificity, and recall of my model are 0.8866856, 0.905618, 0.6129032, and 0.9572447, respectively. My model indicates that I have a high accuracy, sensitivity, and recall while my specificity is above average. My ROC plot shows a pretty high and good curve and the AUC I obtained was an AUC of 0.9385406. This AUC for my ROC plot is considered great since it falls in the great range of 0.9 to 1. The average out-of-sample accuracy, sensitivity, and recall are each 1.</p>
+</div>
+<div id="pts-choose-one-variable-you-want-to-predict-can-be-one-you-used-from-before-either-binary-or-continuous-and-run-a-lasso-regression-inputting-all-the-rest-of-your-variables-as-predictors.-choose-lambda-to-give-the-simplest-model-whose-accuracy-is-near-that-of-the-best-i.e.-lambda.1se.-discuss-which-variables-are-retained.-perform-10-fold-cv-using-this-model-if-response-in-binary-compare-models-out-of-sample-accuracy-to-that-of-your-logistic-regression-in-part-5-if-response-is-numeric-compare-the-residual-standard-error-at-the-bottom-of-the-summary-output-aka-rmse-lower-is-better-fit" class="section level5">
+<h5>6.) (10 pts)** Choose one variable you want to predict (can be one you used from before; either binary or continuous) and run a LASSO regression inputting all the rest of your variables as predictors. Choose lambda to give the simplest model whose accuracy is near that of the best (i.e., <code>lambda.1se</code>). Discuss which variables are retained. Perform 10-fold CV using this model: if response in binary, compare model’s out-of-sample accuracy to that of your logistic regression in part 5; if response is numeric, compare the residual standard error (at the bottom of the summary output, aka RMSE): lower is better fit!</h5>
+<pre class="r"><code>library(glmnet)
+set.seed(1234)
+
+n&lt;-as.matrix(NBA_data$y)
+m &lt;-model.matrix(y~.,data = NBA_data)[,-1] 
+
+cv1&lt;-cv.glmnet(m,n, family = &quot;binomial&quot;)
+NBA_lasso&lt;-glmnet(m,n,family=&quot;binomial&quot;,lambda=cv1$lambda.1se)
+coef(NBA_lasso)</code></pre>
+<pre><code>## 703 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                       s0
+## (Intercept)                    -7.998706
+## PlayerAaron Gordon              .       
+## PlayerAaron Harrison            .       
+## PlayerAaron Holiday             .       
+## PlayerAaron Jackson             .       
+## PlayerAbdel Nader               .       
+## PlayerAdreian Payne             .       
+## PlayerAl Horford                .       
+## PlayerAl Jefferson              .       
+## PlayerAl-Farouq Aminu           .       
+## PlayerAlan Williams             .       
+## PlayerAlec Burks                .       
+## PlayerAlec Peters               .       
+## PlayerÁlex Abrines              .       
+## PlayerAlex Caruso               .       
+## PlayerAlex Len                  .       
+## PlayerAlex Poythress            .       
+## PlayerAlfonzo McKinnie          .       
+## PlayerAlize Johnson             .       
+## PlayerAllen Crabbe              .       
+## PlayerAllonzo Trier             .       
+## PlayerAmile Jefferson           .       
+## PlayerAmir Johnson              .       
+## PlayerAndre Drummond            .       
+## PlayerAndre Iguodala            .       
+## PlayerAndre Ingram              .       
+## PlayerAndre Roberson            .       
+## PlayerAndrew Bogut              .       
+## PlayerAndrew Harrison           .       
+## PlayerAndrew White              .       
+## PlayerAndrew Wiggins            .       
+## PlayerAnfernee Simons           .       
+## PlayerÁngel Delgado             .       
+## PlayerAnte Žižić                .       
+## PlayerAnthony Brown             .       
+## PlayerAnthony Davis             .       
+## PlayerAnthony Tolliver          .       
+## PlayerAntonio Blakeney          .       
+## PlayerAntonius Cleveland        .       
+## PlayerAron Baynes               .       
+## PlayerArron Afflalo             .       
+## PlayerAustin Rivers             .       
+## PlayerAvery Bradley             .       
+## PlayerB.J. Johnson              .       
+## PlayerBam Adebayo               .       
+## PlayerBen McLemore              .       
+## PlayerBen Moore                 .       
+## PlayerBen Simmons               .       
+## PlayerBilly Garrett             .       
+## PlayerBismack Biyombo           .       
+## PlayerBlake Griffin             .       
+## PlayerBoban Marjanović          .       
+## PlayerBobby Brown               .       
+## PlayerBobby Portis              .       
+## PlayerBogdan Bogdanović         .       
+## PlayerBojan Bogdanović          .       
+## PlayerBonzie Colson             .       
+## PlayerBrad Wanamaker            .       
+## PlayerBradley Beal              .       
+## PlayerBrandan Wright            .       
+## PlayerBrandon Goodwin           .       
+## PlayerBrandon Ingram            .       
+## PlayerBrandon Jennings          .       
+## PlayerBrandon Knight            .       
+## PlayerBrandon Paul              .       
+## PlayerBrandon Sampson           .       
+## PlayerBriante Weber             .       
+## PlayerBrice Johnson             .       
+## PlayerBrook Lopez               .       
+## PlayerBruce Brown               .       
+## PlayerBruno Caboclo             .       
+## PlayerBryn Forbes               .       
+## PlayerBuddy Hield               .       
+## PlayerC.J. Miles                .       
+## PlayerC.J. Williams             .       
+## PlayerCaleb Swanigan            .       
+## PlayerCameron Payne             .       
+## PlayerCameron Reynolds          .       
+## PlayerCaris LeVert              .       
+## PlayerCarmelo Anthony           .       
+## PlayerCedi Osman                .       
+## PlayerChandler Hutchison        .       
+## PlayerChandler Parsons          .       
+## PlayerChanning Frye             .       
+## PlayerCharles Cooke             .       
+## PlayerChasson Randle            .       
+## PlayerCheick Diallo             .       
+## PlayerChimezie Metu             .       
+## PlayerChinanu Onuaku            .       
+## PlayerChris Boucher             .       
+## PlayerChris Chiozza             .       
+## PlayerChris McCullough          .       
+## PlayerChris Paul                .       
+## PlayerChristian Wood            .       
+## PlayerCJ McCollum               .       
+## PlayerClint Capela              .       
+## PlayerCody Zeller               .       
+## PlayerCole Aldrich              .       
+## PlayerCollin Sexton             .       
+## PlayerCorey Brewer              .       
+## PlayerCory Joseph               .       
+## PlayerCourtney Lee              .       
+## PlayerCristiano Felício         .       
+## PlayerD.J. Augustin             .       
+## PlayerD.J. Stephens             .       
+## PlayerD.J. Wilson               .       
+## PlayerD&#39;Angelo Russell          .       
+## PlayerDairis Bertāns            .       
+## PlayerDakari Johnson            .       
+## PlayerDamian Jones              .       
+## PlayerDamian Lillard            .       
+## PlayerDamien Wilkins            .       
+## PlayerDamion Lee                .       
+## PlayerDamyean Dotson            .       
+## PlayerDaniel Hamilton           .       
+## PlayerDaniel Theis              .       
+## PlayerDanilo Gallinari          .       
+## PlayerDanny Green               .       
+## PlayerDante Cunningham          .       
+## PlayerDante Exum                .       
+## PlayerDanuel House              .       
+## PlayerDario Šarić               .       
+## PlayerDarius Miller             .       
+## PlayerDarrell Arthur            .       
+## PlayerDarren Collison           .       
+## PlayerDarrun Hilliard           .       
+## PlayerDaryl Macon               .       
+## PlayerDavid Nwaba               .       
+## PlayerDavid Stockton            .       
+## PlayerDavid West                .       
+## PlayerDāvis Bertāns             .       
+## PlayerDavon Reed                .       
+## PlayerDe&#39;Aaron Fox              .       
+## PlayerDe&#39;Anthony Melton         .       
+## PlayerDeandre Ayton             .       
+## PlayerDeAndre Jordan            .       
+## PlayerDeAndre Liggins           .       
+## PlayerDeAndre&#39; Bembry           .       
+## PlayerDejounte Murray           .       
+## PlayerDelon Wright              .       
+## PlayerDeMar DeRozan             .       
+## PlayerDeMarcus Cousins          .       
+## PlayerDeMarre Carroll           .       
+## PlayerDemetrius Jackson         .       
+## PlayerDeng Adel                 .       
+## PlayerDennis Schröder           .       
+## PlayerDennis Smith Jr.          .       
+## PlayerDenzel Valentine          .       
+## PlayerDeonte Burton             .       
+## PlayerDerrick Favors            .       
+## PlayerDerrick Jones Jr.         .       
+## PlayerDerrick Rose              .       
+## PlayerDerrick Walton            .       
+## PlayerDerrick White             .       
+## PlayerDerrick Williams          .       
+## PlayerDeVaughn Akoon-Purcell    .       
+## PlayerDevin Booker              .       
+## PlayerDevin Harris              .       
+## PlayerDevin Robinson            .       
+## PlayerDevonte&#39; Graham           .       
+## PlayerDewayne Dedmon            .       
+## PlayerDeyonta Davis             .       
+## PlayerDillon Brooks             .       
+## PlayerDion Waiters              .       
+## PlayerDirk Nowitzki             .       
+## PlayerDomantas Sabonis          .       
+## PlayerDonatas Motiejūnas        .       
+## PlayerDonovan Mitchell          .       
+## PlayerDonte DiVincenzo          .       
+## PlayerDonte Grantham            .       
+## PlayerDorian Finney-Smith       .       
+## PlayerDoug McDermott            .       
+## PlayerDragan Bender             .       
+## PlayerDraymond Green            .       
+## PlayerDrew Eubanks              .       
+## PlayerDuncan Robinson           .       
+## PlayerDusty Hannahs             .       
+## PlayerDwayne Bacon              .       
+## PlayerDwight Buycks             .       
+## PlayerDwight Howard             .       
+## PlayerDwight Powell             .       
+## PlayerDwyane Wade               .       
+## PlayerDžanan Musa               .       
+## PlayerE&#39;Twaun Moore             .       
+## PlayerEd Davis                  .       
+## PlayerEdmond Sumner             .       
+## PlayerEkpe Udoh                 .       
+## PlayerElfrid Payton             .       
+## PlayerElie Okobo                .       
+## PlayerEmanuel Terry             .       
+## PlayerEmeka Okafor              .       
+## PlayerEmmanuel Mudiay           .       
+## PlayerEnes Kanter               .       
+## PlayerEric Bledsoe              .       
+## PlayerEric Gordon               .       
+## PlayerEric Moreland             .       
+## PlayerErik McCree               .       
+## PlayerErsan İlyasova            .       
+## PlayerEvan Fournier             .       
+## PlayerEvan Turner               .       
+## PlayerFrank Jackson             .       
+## PlayerFrank Kaminsky            .       
+## PlayerFrank Mason III           .       
+## PlayerFrank Ntilikina           .       
+## PlayerFred VanVleet             .       
+## PlayerFurkan Korkmaz            .       
+## PlayerGarrett Temple            .       
+## PlayerGary Clark                .       
+## PlayerGary Harris               .       
+## PlayerGary Payton II            .       
+## PlayerGary Trent Jr.            .       
+## PlayerGeorge Hill               .       
+## PlayerGeorge King               .       
+## PlayerGeorges Niang             .       
+## PlayerGeorgios Papagiannis      .       
+## PlayerGerald Green              .       
+## PlayerGian Clavell              .       
+## PlayerGiannis Antetokounmpo     .       
+## PlayerGlenn Robinson III        .       
+## PlayerGoran Dragić              .       
+## PlayerGordon Hayward            .       
+## PlayerGorgui Dieng              .       
+## PlayerGrayson Allen             .       
+## PlayerGreg Monroe               .       
+## PlayerGuerschon Yabusele        .       
+## PlayerHamidou Diallo            .       
+## PlayerHarrison Barnes           .       
+## PlayerHarry Giles               .       
+## PlayerHassan Whiteside          .       
+## PlayerHaywood Highsmith         .       
+## PlayerHenry Ellenson            .       
+## PlayerIan Clark                 .       
+## PlayerIan Mahinmi               .       
+## PlayerIke Anigbogu              .       
+## PlayerIman Shumpert             .       
+## PlayerIsaac Bonga               .       
+## PlayerIsaac Humphries           .       
+## PlayerIsaiah Briscoe            .       
+## PlayerIsaiah Canaan             .       
+## PlayerIsaiah Hartenstein        .       
+## PlayerIsaiah Hicks              .       
+## PlayerIsaiah Taylor             .       
+## PlayerIsaiah Thomas             .       
+## PlayerIsaiah Whitehead          .       
+## PlayerIsh Smith                 .       
+## PlayerIvan Rabb                 .       
+## PlayerIvica Zubac               .       
+## PlayerJ.J. Barea                .       
+## PlayerJ.J. Redick               .       
+## PlayerJ.P. Macura               .       
+## PlayerJ.R. Smith                .       
+## PlayerJabari Bird               .       
+## PlayerJabari Parker             .       
+## PlayerJack Cooley               .       
+## PlayerJacob Evans               .       
+## PlayerJacob Pullen              .       
+## PlayerJacob Wiley               .       
+## PlayerJae Crowder               .       
+## PlayerJahlil Okafor             .       
+## PlayerJaKarr Sampson            .       
+## PlayerJake Layman               .       
+## PlayerJakob Poeltl              .       
+## PlayerJalen Brunson             .       
+## PlayerJalen Jones               .       
+## PlayerJamal Crawford            .       
+## PlayerJamal Murray              .       
+## PlayerJameel Warney             .       
+## PlayerJameer Nelson             .       
+## PlayerJamel Artis               .       
+## PlayerJames Ennis               .       
+## PlayerJames Harden              .       
+## PlayerJames Johnson             .       
+## PlayerJames Michael McAdoo      .       
+## PlayerJames Nunnally            .       
+## PlayerJames Webb III            .       
+## PlayerJames Young               .       
+## PlayerJamil Wilson              .       
+## PlayerJaMychal Green            .       
+## PlayerJared Dudley              .       
+## PlayerJared Terrell             .       
+## PlayerJarell Eddie              .       
+## PlayerJarell Martin             .       
+## PlayerJaren Jackson Jr.         .       
+## PlayerJaron Blossomgame         .       
+## PlayerJarred Vanderbilt         .       
+## PlayerJarrett Allen             .       
+## PlayerJarrett Jack              .       
+## PlayerJason Smith               .       
+## PlayerJason Terry               .       
+## PlayerJaVale McGee              .       
+## PlayerJawun Evans               .       
+## PlayerJaylen Adams              .       
+## PlayerJaylen Brown              .       
+## PlayerJaylen Morris             .       
+## PlayerJayson Tatum              .       
+## PlayerJeff Green                .       
+## PlayerJeff Teague               .       
+## PlayerJeff Withey               .       
+## PlayerJemerrio Jones            .       
+## PlayerJerami Grant              .       
+## PlayerJeremy Evans              .       
+## PlayerJeremy Lamb               .       
+## PlayerJeremy Lin                .       
+## PlayerJerian Grant              .       
+## PlayerJerome Robinson           .       
+## PlayerJerryd Bayless            .       
+## PlayerJevon Carter              .       
+## PlayerJimmer Fredette           .       
+## PlayerJimmy Butler              .       
+## PlayerJoakim Noah               .       
+## PlayerJodie Meeks               .       
+## PlayerJoe Chealey               .       
+## PlayerJoe Harris                .       
+## PlayerJoe Ingles                .       
+## PlayerJoe Johnson               .       
+## PlayerJoe Young                 .       
+## PlayerJoel Bolomboy             .       
+## PlayerJoel Embiid               .       
+## PlayerJoffrey Lauvergne         .       
+## PlayerJohn Collins              .       
+## PlayerJohn Henson               .       
+## PlayerJohn Holland              .       
+## PlayerJohn Jenkins              .       
+## PlayerJohn Wall                 .       
+## PlayerJohnathan Motley          .       
+## PlayerJohnathan Williams        .       
+## PlayerJohnny O&#39;Bryant           .       
+## PlayerJon Leuer                 .       
+## PlayerJonah Bolden              .       
+## PlayerJonas Jerebko             .       
+## PlayerJonas Valančiūnas         .       
+## PlayerJonathan Gibson           .       
+## PlayerJonathan Isaac            .       
+## PlayerJonathon Simmons          .       
+## PlayerJordan Bell               .       
+## PlayerJordan Clarkson           .       
+## PlayerJordan Crawford           .       
+## PlayerJordan Loyd               .       
+## PlayerJordan McRae              .       
+## PlayerJordan Mickey             .       
+## PlayerJordan Sibert             .       
+## PlayerJosé Calderón             .       
+## PlayerJosh Gray                 .       
+## PlayerJosh Hart                 .       
+## PlayerJosh Huestis              .       
+## PlayerJosh Jackson              .       
+## PlayerJosh Magette              .       
+## PlayerJosh McRoberts            .       
+## PlayerJosh Okogie               .       
+## PlayerJosh Richardson           .       
+## PlayerJosh Smith                .       
+## PlayerJrue Holiday              .       
+## PlayerJuan Hernangómez          .       
+## PlayerJulian Washburn           .       
+## PlayerJulius Randle             .       
+## PlayerJulyan Stone              .       
+## PlayerJustin Anderson           .       
+## PlayerJustin Holiday            .       
+## PlayerJustin Jackson            .       
+## PlayerJustin Patton             .       
+## PlayerJustise Winslow           .       
+## PlayerJusuf Nurkić              .       
+## PlayerKadeem Allen              .       
+## PlayerKalin Lucas               .       
+## PlayerKarl-Anthony Towns        .       
+## PlayerKawhi Leonard             .       
+## PlayerKay Felder                .       
+## PlayerKeita Bates-Diop          .       
+## PlayerKelly Olynyk              .       
+## PlayerKelly Oubre Jr.           .       
+## PlayerKemba Walker              .       
+## PlayerKendrick Perkins          .       
+## PlayerKenneth Faried            .       
+## PlayerKenrich Williams          .       
+## PlayerKent Bazemore             .       
+## PlayerKentavious Caldwell-Pope  .       
+## PlayerKevin Durant              .       
+## PlayerKevin Huerter             .       
+## PlayerKevin Knox                .       
+## PlayerKevin Love                .       
+## PlayerKevon Looney              .       
+## PlayerKhem Birch                .       
+## PlayerKhris Middleton           .       
+## PlayerKhyri Thomas              .       
+## PlayerKlay Thompson             .       
+## PlayerKobi Simmons              .       
+## PlayerKosta Koufos              .       
+## PlayerKostas Antetokounmpo      .       
+## PlayerKris Dunn                 .       
+## PlayerKristaps Porziņģis        .       
+## PlayerKyle Anderson             .       
+## PlayerKyle Collinsworth         .       
+## PlayerKyle Korver               .       
+## PlayerKyle Kuzma                .       
+## PlayerKyle Lowry                .       
+## PlayerKyle O&#39;Quinn              .       
+## PlayerKyle Singler              .       
+## PlayerKyrie Irving              .       
+## PlayerLaMarcus Aldridge         .       
+## PlayerLance Stephenson          .       
+## PlayerLance Thomas              .       
+## PlayerLandry Shamet             .       
+## PlayerLangston Galloway         .       
+## PlayerLarry Drew II             .       
+## PlayerLarry Nance Jr.           .       
+## PlayerLauri Markkanen           .       
+## PlayerLeBron James              .       
+## PlayerLondon Perrantes          .       
+## PlayerLonnie Walker             .       
+## PlayerLonzo Ball                .       
+## PlayerLorenzo Brown             .       
+## PlayerLou Williams              .       
+## PlayerLuc Mbah a Moute          .       
+## PlayerLucas Nogueira            .       
+## PlayerLuis Montero              .       
+## PlayerLuka Dončić               .       
+## PlayerLuke Babbitt              .       
+## PlayerLuke Kennard              .       
+## PlayerLuke Kornet               .       
+## PlayerLuol Deng                 .       
+## PlayerMalachi Richardson        .       
+## PlayerMalcolm Brogdon           .       
+## PlayerMalcolm Delaney           .       
+## PlayerMalcolm Miller            .       
+## PlayerMalik Beasley             .       
+## PlayerMalik Monk                .       
+## PlayerMangok Mathiang           .       
+## PlayerManu Ginóbili             .       
+## PlayerMarc Gasol                .       
+## PlayerMarcin Gortat             .       
+## PlayerMarco Belinelli           .       
+## PlayerMarcus Derrickson         .       
+## PlayerMarcus Georges-Hunt       .       
+## PlayerMarcus Morris             .       
+## PlayerMarcus Paige              .       
+## PlayerMarcus Smart              .       
+## PlayerMario Chalmers            .       
+## PlayerMario Hezonja             .       
+## PlayerMarkel Brown              .       
+## PlayerMarkelle Fultz            .       
+## PlayerMarkieff Morris           .       
+## PlayerMarquese Chriss           .       
+## PlayerMarquis Teague            .       
+## PlayerMarreese Speights         .       
+## PlayerMarshall Plumlee          .       
+## PlayerMarShon Brooks            .       
+## PlayerMarvin Bagley III         .       
+## PlayerMarvin Williams           .       
+## PlayerMason Plumlee             .       
+## PlayerMatt Costello             .       
+## PlayerMatt Williams             .       
+## PlayerMatthew Dellavedova       .       
+## PlayerMaurice Harkless          .       
+## PlayerMaxi Kleber               .       
+## PlayerMelvin Frazier            .       
+## PlayerMeyers Leonard            .       
+## PlayerMichael Beasley           .       
+## PlayerMichael Carter-Williams   .       
+## PlayerMichael Kidd-Gilchrist    .       
+## PlayerMikal Bridges             .       
+## PlayerMike Conley               .       
+## PlayerMike James                .       
+## PlayerMike Muscala              .       
+## PlayerMike Scott                .       
+## PlayerMiles Bridges             .       
+## PlayerMiles Plumlee             .       
+## PlayerMiloš Teodosić            .       
+## PlayerMilton Doyle              .       
+## PlayerMindaugas Kuzminskas      .       
+## PlayerMirza Teletović           .       
+## PlayerMitch Creek               .       
+## PlayerMitchell Robinson         .       
+## PlayerMo Bamba                  .       
+## PlayerMonte Morris              .       
+## PlayerMontrezl Harrell          .       
+## PlayerMoritz Wagner             .       
+## PlayerMyke Henry                .       
+## PlayerMyles Turner              .       
+## PlayerNate Wolters              .       
+## PlayerNaz Mitrou-Long           .       
+## PlayerNemanja Bjelica           .       
+## PlayerNenê                      .       
+## PlayerNerlens Noel              .       
+## PlayerNick Collison             .       
+## PlayerNick Young                .       
+## PlayerNicolas Batum             .       
+## PlayerNicolás Brussino          .       
+## PlayerNigel Hayes               .       
+## PlayerNik Stauskas              .       
+## PlayerNikola Jokić              .       
+## PlayerNikola Mirotić            .       
+## PlayerNikola Vučević            .       
+## PlayerNoah Vonleh               .       
+## PlayerNorman Powell             .       
+## PlayerOG Anunoby                .       
+## PlayerOkaro White               .       
+## PlayerOmari Johnson             .       
+## PlayerOmari Spellman            .       
+## PlayerÖmer Aşık                 .       
+## PlayerOmri Casspi               .       
+## PlayerOtto Porter               .       
+## PlayerP.J. Tucker               .       
+## PlayerPascal Siakam             .       
+## PlayerPat Connaughton           .       
+## PlayerPatrick Beverley          .       
+## PlayerPatrick McCaw             .       
+## PlayerPatrick Patterson         .       
+## PlayerPatty Mills               .       
+## PlayerPau Gasol                 .       
+## PlayerPaul George               .       
+## PlayerPaul Millsap              .       
+## PlayerPaul Zipser               .       
+## PlayerPJ Dozier                 .       
+## PlayerQuincy Acy                .       
+## PlayerQuincy Pondexter          .       
+## PlayerQuinn Cook                .       
+## PlayerR.J. Hunter               .       
+## PlayerRajon Rondo               .       
+## PlayerRamon Sessions            .       
+## PlayerRashad Vaughn             .       
+## PlayerRaul Neto                 .       
+## PlayerRawle Alkins              .       
+## PlayerRay Spalding              .       
+## PlayerRaymond Felton            .       
+## PlayerReggie Bullock            .       
+## PlayerReggie Hearn              .       
+## PlayerReggie Jackson            .       
+## PlayerRichard Jefferson         .       
+## PlayerRichaun Holmes            .       
+## PlayerRicky Rubio               .       
+## PlayerRobert Covington          .       
+## PlayerRobert Williams           .       
+## PlayerRobin Lopez               .       
+## PlayerRodions Kurucs            .       
+## PlayerRodney Hood               .       
+## PlayerRodney McGruder           .       
+## PlayerRodney Purvis             .       
+## PlayerRon Baker                 .       
+## PlayerRondae Hollis-Jefferson   .       
+## PlayerRoyce O&#39;Neale             .       
+## PlayerRudy Gay                  .       
+## PlayerRudy Gobert               .       
+## PlayerRussell Westbrook         .       
+## PlayerRyan Anderson             .       
+## PlayerRyan Arcidiacono          .       
+## PlayerRyan Broekhoff            .       
+## PlayerSalah Mejri               .       
+## PlayerSam Dekker                .       
+## PlayerScott Machado             .       
+## PlayerScotty Hopson             .       
+## PlayerSean Kilpatrick           .       
+## PlayerSemi Ojeleye              .       
+## PlayerSerge Ibaka               .       
+## PlayerSeth Curry                .       
+## PlayerShabazz Napier            .       
+## PlayerShai Gilgeous-Alexander   .       
+## PlayerShake Milton              .       
+## PlayerShane Larkin              .       
+## PlayerShaquille Harrison        .       
+## PlayerShaun Livingston          .       
+## PlayerShelvin Mack              .       
+## PlayerSindarius Thornwell       .       
+## PlayerSkal Labissière           .       
+## PlayerSolomon Hill              .       
+## PlayerSpencer Dinwiddie         .       
+## PlayerStanley Johnson           .       
+## PlayerStephen Curry             .       
+## PlayerSterling Brown            .       
+## PlayerSteven Adams              .       
+## PlayerSviatoslav Mykhailiuk     .       
+## PlayerT.J. Leaf                 .       
+## PlayerT.J. McConnell            .       
+## PlayerT.J. Warren               .       
+## PlayerTahjere McCall            .       
+## PlayerTaj Gibson                .       
+## PlayerTarik Black               .       
+## PlayerTaurean Prince            .       
+## PlayerTerrance Ferguson         .       
+## PlayerTerrence Jones            .       
+## PlayerTerrence Ross             .       
+## PlayerTerry Rozier              .       
+## PlayerThabo Sefolosha           .       
+## PlayerThaddeus Young            .       
+## PlayerTheo Pinson               .       
+## PlayerThomas Bryant             .       
+## PlayerThomas Welsh              .       
+## PlayerThon Maker                .       
+## PlayerTim Frazier               .       
+## PlayerTim Hardaway Jr.          .       
+## PlayerTim Quarterman            .       
+## PlayerTimofey Mozgov            .       
+## PlayerTimothé Luwawu-Cabarrot   .       
+## PlayerTobias Harris             .       
+## PlayerTomáš Satoranský          .       
+## PlayerTony Allen                .       
+## PlayerTony Bradley              .       
+## PlayerTony Parker               .       
+## PlayerTony Snell                .       
+## PlayerTorrey Craig              .       
+## PlayerTrae Young                .       
+## PlayerTravis Wear               .       
+## PlayerTreveon Graham            .       
+## PlayerTrevon Duval              .       
+## PlayerTrevor Ariza              .       
+## PlayerTrevor Booker             .       
+## PlayerTrey Burke                .       
+## PlayerTrey Lyles                .       
+## PlayerTrey McKinney-Jones       .       
+## PlayerTristan Thompson          .       
+## PlayerTroy Brown Jr.            .       
+## PlayerTroy Caupain              .       
+## PlayerTroy Daniels              .       
+## PlayerTroy Williams             .       
+## PlayerTyler Cavanaugh           .       
+## PlayerTyler Davis               .       
+## PlayerTyler Dorsey              .       
+## PlayerTyler Ennis               .       
+## PlayerTyler Johnson             .       
+## PlayerTyler Lydon               .       
+## PlayerTyler Ulis                .       
+## PlayerTyler Zeller              .       
+## PlayerTyreke Evans              .       
+## PlayerTyrone Wallace            .       
+## PlayerTyson Chandler            .       
+## PlayerTyus Jones                .       
+## PlayerUdonis Haslem             .       
+## PlayerVander Blue               .       
+## PlayerVictor Oladipo            .       
+## PlayerVince Carter              .       
+## PlayerVince Edwards             .       
+## PlayerVince Hunter              .       
+## PlayerWade Baldwin              .       
+## PlayerWalt Lemon Jr.            .       
+## PlayerWayne Ellington           .       
+## PlayerWayne Selden              .       
+## PlayerWendell Carter Jr.        .       
+## PlayerWesley Iwundu             .       
+## PlayerWesley Johnson            .       
+## PlayerWesley Matthews           .       
+## PlayerWill Barton               .       
+## PlayerWillie Cauley-Stein       .       
+## PlayerWillie Reed               .       
+## PlayerWilly Hernangómez         .       
+## PlayerWilson Chandler           .       
+## PlayerXavier Munford            .       
+## PlayerXavier Rathan-Mayes       .       
+## PlayerXavier Silas              .       
+## PlayerYante Maten               .       
+## PlayerYogi Ferrell              .       
+## PlayerYuta Watanabe             .       
+## PlayerZach Collins              .       
+## PlayerZach LaVine               .       
+## PlayerZach Lofton               .       
+## PlayerZach Randolph             .       
+## PlayerZaza Pachulia             .       
+## PlayerZhaire Smith              .       
+## PlayerZhou Qi                   .       
+## PositionPF                      .       
+## PositionPG                     14.640600
+## PositionSF                      .       
+## PositionSG                      .       
+## Age                             .       
+## TeamBOS                         .       
+## TeamBRK                         .       
+## TeamCHI                         .       
+## TeamCHO                         .       
+## TeamCLE                         .       
+## TeamDAL                         .       
+## TeamDEN                         .       
+## TeamDET                         .       
+## TeamGSW                         .       
+## TeamHOU                         .       
+## TeamIND                         .       
+## TeamLAC                         .       
+## TeamLAL                         .       
+## TeamMEM                         .       
+## TeamMIA                         .       
+## TeamMIL                         .       
+## TeamMIN                         .       
+## TeamNOP                         .       
+## TeamNYK                         .       
+## TeamOKC                         .       
+## TeamORL                         .       
+## TeamPHI                         .       
+## TeamPHO                         .       
+## TeamPOR                         .       
+## TeamSAC                         .       
+## TeamSAS                         .       
+## TeamTOR                         .       
+## TeamTOT                         .       
+## TeamUTA                         .       
+## TeamWAS                         .       
+## Games_Played                    .       
+## Games_Started                   .       
+## FG_Percent                      .       
+## x3P_Percent                     .       
+## FT_Percent                      .       
+## MPG                             .       
+## PPG                             .       
+## RPG                             .       
+## APG                             .       
+## SPG                             .       
+## BPG                             .</code></pre>
+<pre class="r"><code>NBA_truth &lt;-NBA_data$y
+NBA_prob2&lt;-predict(NBA_lasso, newx=m, type=&quot;response&quot;)
+class_diag(NBA_prob2,NBA_truth)</code></pre>
+<pre><code>##   acc sens spec ppv auc
+## 1   1    1    1   1   1</code></pre>
+<pre class="r"><code>table(predicted=NBA_prob2&gt;.5,NBA_truth)%&gt;%addmargins</code></pre>
+<pre><code>##          NBA_truth
+## predicted    0    1  Sum
+##     FALSE  842    0  842
+##     TRUE     0  217  217
+##     Sum    842  217 1059</code></pre>
+<pre class="r"><code>(842+217)/1059 #accuracy</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>217/217 #sensitivity </code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>842/842 #specificity</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>set.seed(1234)
+k=10
+data &lt;- NBA_data %&gt;% sample_frac 
+folds1 &lt;- ntile(1:nrow(data),n=10) 
+diags1&lt;-NULL
+for(i in 1:k){
+train1 &lt;- data[folds1!=i,]
+test1 &lt;- data[folds1==i,] 
+truth1 &lt;- test1$y 
+fit &lt;- glm(y~.,data=NBA_data,family=binomial(link=&quot;logit&quot;))
+probs1 &lt;- predict(fit, newdata=test1, type=&quot;response&quot;)
+diags1&lt;-rbind(diags1,class_diag(probs1,truth1))
+}
+summarize_all(diags1,mean)</code></pre>
+<pre><code>##   acc sens spec ppv auc
+## 1   1    1    1   1   1</code></pre>
+<p>The variables that retained are PositionPG. The model’s out-of-sample accuracy compared that of the logistical regression in part 5 is the same since they’re both 1.</p>
+</div>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../js/docs.min.js"></script>
+<script src="../js/main.js"></script>
+
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
